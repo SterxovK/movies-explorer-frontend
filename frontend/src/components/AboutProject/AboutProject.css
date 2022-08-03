@@ -1,0 +1,149 @@
+.about-project {
+  padding: 110px 70px;
+}
+
+.about-project__header {
+  margin: 0;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 26.63px;
+  letter-spacing: -0.04em;
+  padding-bottom: 23px;
+  border-bottom: 1px solid #000;
+}
+
+.about-project__container {
+  padding: 70px 0 110px;
+}
+
+.about-project__title {
+  margin: 0;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.04em;
+  padding-bottom: 26px;
+}
+
+.about-project__text {
+  margin: 0;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.04em;
+}
+
+.about-time-project__title {
+  margin: 0;
+  padding: 9px 14px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 20px;
+  color: #000;
+  letter-spacing: -0.04em;
+}
+
+.about-time-project__text {
+  margin: 0;
+  padding-top: 14px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #a0a0a0;
+}
+
+.about-project__content {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.about-project__points {
+  list-style-type: none;
+}
+.about-project__points:first-child {
+  padding-right: 40px;
+}
+
+.about-time-project__content {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 20% 80%;
+  text-align: center;
+}
+
+.about-time-project__points {
+  list-style-type: none;
+}
+
+@media screen and (max-width: 1023px) {
+  .about-project {
+    padding: 90px 50px;
+  }
+
+  .about-project__container {
+    padding: 70px 0 93px;
+  }
+  .about-project__points:first-child {
+    padding-right: 30px;
+  }
+  .about-time-project__text {
+  font-weight: 400;
+}
+}
+
+@media screen and (max-width: 767px) {
+  .about-project__container {
+    padding: 60px 0;
+  }
+
+  .about-project__content {
+    flex-direction: column;
+  }
+
+  .about-project {
+    padding: 70px 18px;
+  }
+
+  .about-time-project__content {
+    grid-template-columns: 35% 65%;
+  }
+
+  .about-project__header {
+    font-size: 18px;
+    line-height: 21.78px;
+    padding-bottom: 28px;
+  }
+
+  .about-project__title {
+    font-size: 18px;
+    line-height: 21.78px;
+    padding-bottom: 16px;
+  }
+
+  .about-project__text {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .about-time-project__title {
+    padding: 11px 10px;
+    font-size: 11px;
+    line-height: 13.31px;
+  }
+
+  .about-time-project__text {
+    font-size: 11px;
+    line-height: 12.74px;
+  }
+  .about-project__points:first-child {
+    padding-right: 0px;
+    padding-bottom: 56px;
+  }
+}

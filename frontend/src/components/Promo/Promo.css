@@ -1,0 +1,66 @@
+.promo {
+  box-sizing: border-box;
+  padding: 50px 40px 60px 40px;
+  background-color: #f3c1f8;
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.promo__title {
+  margin: 0;
+  width: 626px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 40px;
+  line-height: 52px;
+  color: #000;
+  letter-spacing: -0.04em;
+}
+
+.promo__img {
+  width: 722px;
+  height: 244px;
+  background-image: url(../../images/text__COLOR_landing-logo.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  align-self: flex-end;
+}
+
+@media screen and (max-width: 769px) {
+  .promo {
+    padding: 300px 0 70px 0;
+    height: 844px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .promo__title {
+    width: 680px;
+    text-align: center;
+  }
+  .promo__img {
+    align-self: center;
+    width: 680px;
+    height: 230px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .promo {
+    padding: 183px 0 40px 0;
+    height: 630px;
+  }
+
+  .promo__title {
+    width: 300px;
+    font-size: 31px;
+    line-height: 39px;
+  }
+  .promo__img {
+    width: 100%;
+    background-size: cover;
+    background-position-x: center;
+  }
+}
