@@ -13,7 +13,6 @@ function Main() {
       <AboutProject />
       <Teach />
       <AboutMe />
-      <Footer />
     </main>           
   );
 }

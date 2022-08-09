@@ -1,6 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  Redirect,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import Header from '../Header/Header.js';
 import Main from '../Main/Main';
@@ -9,15 +15,25 @@ import SavedMovies from '../SavedMovies/SavedMovies.js';
 import Profile from '../Profile/Profile.js';
 import Login from '../Login/Login.js';
 import Register from '../Register/Register.js';
+import PageNotFound from '../PageNotFound/PageNotFound';
+import Footer from '../Footer/Footer';
 import './App.css';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
+  const { pathname } = useLocation();
 
   return (
-    <div className="page">
-      <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+    <CurrentUserContext.Provider value={currentUser}>
+      <div className="page">
+        {pathname === '/' ||
+        pathname === '/movies' ||
+        pathname === '/saved-movies' ||
+        pathname === '/profile' ? (
+          <Header />
+        ) : (
+          ''
+        )}
 
         <Switch>
           <Route exact path="/">
@@ -43,9 +59,20 @@ function App() {
           <Route path="/sign-up">
             <Register />
           </Route>
+
+          <Route path="*">
+            <PageNotFound />
+          </Route>
         </Switch>
-      </CurrentUserContext.Provider>
-    </div>
+        {pathname === '/' ||
+        pathname === '/movies' ||
+        pathname === '/saved-movies' ? (
+          <Footer />
+        ) : (
+          ''
+        )}
+      </div>
+    </CurrentUserContext.Provider>
   );
 }
 

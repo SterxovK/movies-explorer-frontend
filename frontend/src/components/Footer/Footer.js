@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
   const FOOTER_HEADER = 'Учебный проект Яндекс.Практикум х BeatFilm.';
-  const FOOTER_COPYRIGHT = '© 2020';
+  const FOOTER_COPYRIGHT = '© 2022';
  
   const FOOTER_LINKS = [
     {
