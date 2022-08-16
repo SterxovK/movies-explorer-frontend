@@ -17,12 +17,16 @@ function Register(props) {
   const [formValid, setformValid] = useState(false);
 
   const handleChangeName = (evt) => {
+    const validName = /^[a-zA-Z- ]+$/.test(evt.target.value);
+
     if (evt.target.value.length < 2) {
       setNameError('Длина имени должна быть не менее 2 символов');
     } else if (evt.target.value.length > 30) {
       setNameError('Длина имени должна должна быть не более 30 символов');
+    } else if (!validName) {
+      setNameError('Имя должно быть написано латиницей');
     } else {
-      setNameError("");
+      setNameError('');
     }
     setName(evt.target.value);
   };

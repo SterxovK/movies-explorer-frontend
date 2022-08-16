@@ -17,3 +17,20 @@
 @import url(../src/components/Form/Form.css);
 
 @import url(../src/components/Movies/Movies.css);
+@import url(../src/components/SearchForm/SearchForm.css);
+@import url(../src/components/Navigation/Navigation.css);
+
+
+@import url(../src/components/Menu/Menu.css);
+@import url(../src/components/Modal/Modal.css);
+@import url(../src/components/MobileAccountNavlist/MobileAccountNavlist.css);
+@import url(../src/components/MobileNavigation/MobileNavigation.css);
+
+@import url(../src/components/MenuButton/MenuButton.css);
+
+@import url(../src/components/MoviesCardList/MoviesCardList.css);
+@import url(../src/components/MoviesCard/MoviesCard.css);
+@import url(../src/components/Profile/Profile.css);
+
+
+@import url(../src/components/ShowMoreButton/ShowMoreButton.css)
