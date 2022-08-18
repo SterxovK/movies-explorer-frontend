@@ -6,8 +6,10 @@ function Form(props) {
     <section id={props.name}>
       <form className="form" id={props.id} onSubmit={props.onSubmit}>
         <div className="form__container form__container_auth">
-          <LogoLink />
-          <h2 className="form__title">{props.title}</h2>
+          <div className="form__header">
+            <LogoLink />
+            <h2 className="form__title">{props.title}</h2>
+          </div>
           <fieldset className="form__input-container">
             {props.children}
           </fieldset>

@@ -149,6 +149,11 @@
   .form__container {
     width: 260px;
   }
+  .form__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
   .form-login__request-text {
     font-size: 12px;

@@ -51,9 +51,9 @@ function AboutMe() {
 
   const AboutMePortfolioLink = ABOUT_ME_PORTFOLIO_LINKS.map((item) => (
     <li className="about-me__portfolio-points" key={item.id}>
-      <a className="about-me__portfolio-link" href={item.link}>
+      <a className="about-me__portfolio-link" href={item.link} target="_blank" rel="noreferrer">
         <p className="about-me__portfolio-name-link">{item.name}</p>
-        <PortfolioArrow/>
+        <PortfolioArrow />
       </a>
     </li>
   ));
