@@ -1,0 +1,48 @@
+.movies-card-article__title {
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 15px;
+  line-height: 1.2;
+  color: #000000;
+  box-sizing: border-box;
+  margin: 0;
+  text-align: left;
+  padding-left: 16px;
+}
+
+.movies-card-article__subtitle {
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1.18;
+  color: #A0A0A0;
+  box-sizing: border-box;
+  margin: 0 auto;
+  text-align: left;
+  padding: 17px 16px 16px;
+}
+
+
+.movies-card-article__image {
+  width: 100%;
+  object-fit: cover;
+}
+
+.movies-card-article__favorite-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  border: unset;
+  background: unset;
+  cursor: pointer;
+}
+
+.movies-card-article__text-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
