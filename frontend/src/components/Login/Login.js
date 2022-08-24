@@ -69,7 +69,7 @@ function Login(props) {
         Link={
           <p className="form-login__request-text">
             {LOGIN_REQUEST_TEXT}
-            <Link to="/sign-up" className="form-login__register-link">
+            <Link to="/signup" className="form-login__register-link">
               {LOGIN_LINK_TEXT}
             </Link>
           </p>

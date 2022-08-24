@@ -33,4 +33,7 @@
 @import url(../src/components/Profile/Profile.css);
 
 
-@import url(../src/components/ShowMoreButton/ShowMoreButton.css)
+@import url(../src/components/ShowMoreButton/ShowMoreButton.css);
+
+@import url(../src/components/NotificationModal/NotificationModal.css);
+@import url(../src/components/Notification/Notification.css);

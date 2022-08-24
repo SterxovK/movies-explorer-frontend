@@ -6,13 +6,13 @@ const AuthNavigation = React.memo((props) => {
     {
       id: 1,
       title: 'Регистрация',
-      link: '/sign-up',
+      link: '/signup',
       className: 'auth-nav__link',
     },
     {
       id: 2,
       title: 'Войти',
-      link: '/sign-in',
+      link: '/signin',
       className: 'auth-nav__link auth-nav__link_bgcolor-black',
     },
   ];

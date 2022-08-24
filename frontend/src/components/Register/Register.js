@@ -86,7 +86,7 @@ function Register(props) {
         Link={
           <p className="form-login__request-text">
             {REGISTER_REQUEST_TEXT}
-            <Link to="/sign-in" className="form-login__register-link">
+            <Link to="/signin" className="form-login__register-link">
               {REGISTER_LINK_TEXT}
             </Link>
           </p>
