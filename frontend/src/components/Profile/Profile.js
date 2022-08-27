@@ -1,136 +1,166 @@
-import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 
-import MenuButton from '../MenuButton/MenuButton';
-import LogoLink from '../LogoLink/LogoLink';
-import Navigation from '../Navigation/Navigation';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 
-function Profile(props) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [changedName, setChangedName] = useState(false);
-  const [changedEmail, setChangedEmail] = useState(false);
-  const [nameError, setNameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [isInputDisabled, setIsInputDisabled] = useState(true);
-  const [formValid, setFormValid] = useState(false);
+import ProfileForm from '../ProfileForm/ProfileForm';
 
-   function handleNameChange(e) {
-     setChangedName(true);
-     const validName = /^[a-zA-Z- ]+$/.test(e.target.value);
+import useFormWithValidation from '../../hooks/useFormValidation';
 
-     if (e.target.value.length < 2) {
-       setNameError('Длина имени должна быть не менее 2 символов');
-     } else if (e.target.value.length > 30) {
-       setNameError('Длина имени должна должна быть не более 30 символов');
-     } else if (!validName) {
-       setNameError('Имя должно быть указано латиницей');
-     } else {
-       setNameError('');
-     }
-     setName(e.target.value);
-   }
+import UPDATE_PROFILE_ERRORS_TEXTS from '../../constants/update-profile-errors-texts';
 
-   function handleEmailChange(e) {
-     setChangedEmail(true);
-     const validEmail = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i.test(
-       e.target.value
-     );
+function Profile({
+  onSignOut,
+  onUpdateCurrentUser,
+  isLoadingUpdateCurrentUser,
+  updUserResStatus,
+}) {
 
-     if (!validEmail) {
-       setEmailError('Неверный формат почты');
-     } else {
-       setEmailError('');
-     }
-     setEmail(e.target.value);
-   }
+  const currentUserData = React.useContext(CurrentUserContext);
 
-    function changeInputDisabled() {
-      setIsInputDisabled(!isInputDisabled);
+  const [isUpdateUserProfileError, setIsUpdateUserProfileError] = React.useState(false);
+  const [updateUserProfileErrorText, setUpdateUserProfileErrorText] = React.useState('');
+  const [formIsValid, setFormIsValid] = React.useState(false);
+
+  const {
+    values,
+    errors,
+    isValid,
+    handleChange,
+    resetForm
+  } = useFormWithValidation({});
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    onUpdateCurrentUser(values)
+    handleToggleEditableProfile();
+    resetForm(currentUserData);
+  };
+
+  const [isEdited, setIsEdited] = React.useState(false);
+
+  const handleToggleEditableProfile = () => {
+    setIsEdited(!isEdited);
+    setIsUpdateUserProfileError(false);
+    setUpdateUserProfileErrorText('');
+  };
+
+  const SUBMIT_BUTTON_SETTINGS = {
+    type: 'submit',
+    title: 'Сохранить',
+  };
+
+  const INPUTS_DATA = [
+    {
+      key: 1,
+      type: "text",
+      id: "name",
+      label: "Имя",
+      placeholder: `${currentUserData.data.name}`,
+      name: "name",
+      required: true,
+      regexp: "[a-zA-Z -]{2,30}",
+      customErrorMessage:
+        "Поле name может содержать только латиницу, пробел или дефис: a-zA-Z -",
+    },
+    {
+      key: 2,
+      type: "email",
+      id: "email",
+      label: "Почта",
+      placeholder: `${currentUserData.data.email}`,
+      name: "email",
+      required: true,
+    },
+  ];
+
+  const TITLE_TEXT = `Привет, ${currentUserData.data.name || ""}!`;
+ // console.log(currentUserData.data.name);
+
+  const PROFILE_STYLE_SETTINGS = {
+    main: 'profile',
+  };
+
+  const PROFILE_EDIT_BUTTON_SETTINGS = {
+    title: 'Редактировать',
+  };
+
+  const PROFILE_SIGNOUT_BUTTON_SETTINGS = {
+    title: 'Выйти из аккаунта',
+  };
+
+  React.useEffect(() => {
+    if (currentUserData) {
+      resetForm(currentUserData);
     }
+  }, [currentUserData, resetForm])
 
-    function handleSubmit(evt) {
-      evt.preventDefault();
-      props.onEditUser({
-        name,
-        email,
-      });
-      changeInputDisabled();
+  React.useEffect(() => {
+    setFormIsValid(isValid);
+  }, [isValid, values])
+
+  React.useEffect(() => {
+
+    if (
+      currentUserData.data.name === values.name &&
+      currentUserData.data.email === values.email
+    ) {
+      setFormIsValid(false);
     }
-  
+  }, [currentUserData, values])
+
+
+  const errorHandler = () => {
+    if (updUserResStatus) {
+      switch (updUserResStatus) {
+        case 400:
+        case 404:
+          setIsUpdateUserProfileError(true);
+          setUpdateUserProfileErrorText(UPDATE_PROFILE_ERRORS_TEXTS.BAD_REQUEST);
+          break;
+        case 500:
+          setIsUpdateUserProfileError(true);
+          setUpdateUserProfileErrorText(UPDATE_PROFILE_ERRORS_TEXTS.INTERNAL_SERVER_ERROR)
+          break;
+        case 200:
+          setIsUpdateUserProfileError(false);
+          setUpdateUserProfileErrorText('');
+          break;
+        default:
+          setIsUpdateUserProfileError(true);
+          setUpdateUserProfileErrorText(UPDATE_PROFILE_ERRORS_TEXTS.BASE_ERROR);
+          break;
+      };
+    };
+  };
+
+  React.useEffect(() => {
+    errorHandler();
+  });
+
   return (
-    <section className="profile">
-      <div className="profile__header-container">
-        <LogoLink />
-        <Navigation />
-        <MenuButton onOpenMenu={props.onOpenMenu} />
-      </div>
-      <form className="form__profile" id="profile" onSubmit={handleSubmit}>
-        <div className="form__container_auth">
-          <h2 className="form__heading-profile">Привет, Константин!</h2>
-          <fieldset className="form__inputs">
-            <div className="form__input-container-profile">
-              <label className="form__field-profile">
-                Имя
-                <input
-                  id="profile-name"
-                  className={`form__item-profile ${
-                    changedName && nameError ? 'form__item-profile_error' : ''
-                  }`}
-                  type="text"
-                  value={name}
-                  onChange={handleNameChange}
-                  disabled={!isInputDisabled}
-                />
-              </label>
-            </div>
-            <span className="form__item-profile_error form__profile_span">
-              {nameError}
-            </span>
-            <div className="form__input-container-profile form__input-container_border">
-              <label className="form__field-profile">
-                Почта
-                <input
-                  id="profile-email"
-                  className={`form__item-profile ${
-                    changedEmail && emailError ? 'form__item-profile_error' : ''
-                  }`}
-                  type="text"
-                  value={email}
-                  onChange={handleEmailChange}
-                  disabled={!isInputDisabled}
-                />
-              </label>
-            </div>
-            <span className="form__item-profile_error">{emailError}</span>
-            <div className="form__handlers">
-              <div className="form__item-message">{}</div>
-              <button
-                className={`submit__button-profile ${
-                  !formValid || name < 2 || email < 2
-                    ? 'submit__button-profile_disabled'
-                    : ''
-                }`}
-                type="submit"
-                disabled={!formValid || name < 2 || email < 2}
-                onClick={changeInputDisabled}
-              >
-                Редактировать
-              </button>
-
-              <Link
-                to="/sign-in"
-                className="form__exit"
-                onClick={props.onSignOut}
-              >
-                Выйти из аккаунта
-              </Link>
-            </div>
-          </fieldset>
-        </div>
-      </form>
-    </section>
-  );
+    <main
+      className={PROFILE_STYLE_SETTINGS.main}
+    >
+      <ProfileForm
+        titleText={TITLE_TEXT}
+        inputsData={INPUTS_DATA}
+        onChange={handleChange}
+        values={values}
+        errors={errors}
+        onSubmit={handleSubmit}
+        submitButtonSettings={SUBMIT_BUTTON_SETTINGS}
+        formIsValid={formIsValid}
+        isEdited={isEdited}
+        onToggleEditableProfile={handleToggleEditableProfile}
+        profileEditButtonSettings={PROFILE_EDIT_BUTTON_SETTINGS}
+        profileSignoutButtonSettings={PROFILE_SIGNOUT_BUTTON_SETTINGS}
+        profileUpdateErrorText={updateUserProfileErrorText}
+        isUpdateUserProfileError={isUpdateUserProfileError}
+        onSignOut={onSignOut}
+        isLoadingData={isLoadingUpdateCurrentUser}
+      />
+    </main>
+  )
 }
 
 export default Profile;

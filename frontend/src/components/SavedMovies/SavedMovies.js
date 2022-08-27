@@ -2,62 +2,82 @@ import React from 'react';
 
 import { useLocation } from 'react-router-dom';
 
-import LogoLink from '../LogoLink/LogoLink';
-import Navigation from '../Navigation/Navigation';
 import SearchForm from '../SearchForm/SearchForm';
-import MenuButton from '../MenuButton/MenuButton';
 
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 
-import MovieCardImage from '../../images/movies-img/src-movie-img.png';
+import Notification from '../Notification/Notification';
 
-function SavedMovies(props) {
+import MOVIES_ERRORS_TEXTS from '../../constants/movies-errors-texts';
+
+import NO_MOVIES_FOUND_TEXT from '../../constants/no-movies-found-text';
+
+function SavedMovies({
+  onDeleteSavedMovie,
+  savedMovies,
+  isSavedMoviesEmpty,
+  isLoadingData,
+  handleSearchSavedMoviesData,
+  getSavedMoviesResStatus,
+  isNoSavedMoviesFound,
+}) {
+
+  const [isMoviesApiError, setIsMoviesApiError] = React.useState(false);
+
+  const handleSubmit = (data) => {
+    handleSearchSavedMoviesData(data);
+  }
+
   let location = useLocation();
 
-  const MOVIES_CARD_LIST_DATA = [
-    {
-      id: 1,
-      title: '33 слова о дизайне',
-      subtitle: '1ч 47м',
-      imageAlt: 'кадр из фильма',
-      imageSrc: MovieCardImage,
-      isMarked: false,
-      isShortFilm: true,
-    },
-    {
-      id: 2,
-      title: '33 слова о дизайне',
-      subtitle: '1ч 47м',
-      imageAlt: 'кадр из фильма',
-      imageSrc: MovieCardImage,
-      isMarked: false,
-      isShortFilm: false,
-    },
-    {
-      id: 5,
-      title: '33 слова о дизайне',
-      subtitle: '1ч 47м',
-      imageAlt: 'кадр из фильма',
-      imageSrc: MovieCardImage,
-      isMarked: false,
-      isShortFilm: false,
-    },
-  ];
+  const handleErrors = () => {
+    if (getSavedMoviesResStatus) {
+      switch (getSavedMoviesResStatus) {
+        case 200:
+          setIsMoviesApiError(false);
+          break;
+        default:
+          setIsMoviesApiError(true);
+          break;
+      };
+    };
+  };
+
+  React.useEffect(() => {
+    handleErrors();
+  }, [getSavedMoviesResStatus])
+
+  React.useEffect(() => {
+    handleSearchSavedMoviesData();
+  }, [])
 
   return (
-    <section className="movies">
-      <div className="movies__header-container">
-        <LogoLink />
-        <Navigation />
-        <MenuButton onOpenMenu={props.onOpenMenu} />
-      </div>
-      <SearchForm />
-      <MoviesCardList
-        data={MOVIES_CARD_LIST_DATA}
-        locationPathname={location.pathname}
+    <main>
+      <SearchForm
+        onSubmit={handleSubmit}
       />
-    </section>
-  );
+      {!isLoadingData && isSavedMoviesEmpty && (
+        <Notification
+          text={NO_MOVIES_FOUND_TEXT.SAVED_IS_EMPTY}
+        />
+      )}
+      {!isLoadingData && isNoSavedMoviesFound && (
+        <Notification
+          text={NO_MOVIES_FOUND_TEXT.BASE_TEXT}
+        />
+      )}
+      {isMoviesApiError && (
+        <Notification
+          text={MOVIES_ERRORS_TEXTS.BASE_ERROR}
+        />
+      )}
+      <MoviesCardList
+        data={savedMovies}
+        locationPathname={location.pathname}
+        onDeleteSavedMovie={onDeleteSavedMovie}
+      />
+    </main>
+  )
 }
 
 export default SavedMovies;

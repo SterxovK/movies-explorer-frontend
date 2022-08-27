@@ -1,129 +1,158 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Form from '../Form/Form';
+import React from 'react';
 
-function Login(props) {
-  const LOGIN_TITLE = 'Рады видеть!';
-  const LOGIN_BUTTON_TEXT = 'Войти';
-  const LOGIN_REQUEST_TEXT = 'Ещё не зарегистрированы?';
-  const LOGIN_LINK_TEXT = 'Регистрация';
+import AuthForm from '../AuthForm/AuthForm';
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [formValid, setformValid] = useState(false);
+import useFormWithValidation from '../../hooks/useFormValidation';
 
-  const handleChangeEmail = (evt) => {
-    const validEmail = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i.test(
-      evt.target.value
-    );
+import LOGIN_ERRORS_TEXTS from '../../constants/login-errors-texts';
 
-    if (!validEmail) {
-      setEmailError('Неверный формат почты');
-    } else {
-      setEmailError('');
-    }
-    setEmail(evt.target.value);
-  };
+function Login({
+  onSignin,
+  authResStatus,
+  tokenResStatus,
+  isLoadingSignin,
+ }) {
 
-  const handleChangePassword = (evt) => {
-    if (evt.target.value.length < 6) {
-      setPasswordError('Пароль должен быть не менее 6 символов');
-    } else {
-      setPasswordError('');
-    }
-    setPassword(evt.target.value);
-  };
+  const [isAuthError, setIsAuthError] = React.useState(false);
+  const [authErrorText, setAuthErrorText] = React.useState(null);
+
+  const {
+    values,
+    errors,
+    isValid,
+    handleChange,
+    resetForm
+  } = useFormWithValidation({});
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    if (!email || !password) {
-      return;
-    }
-    props.onLogin(email, password);
+    onSignin(values);
   };
 
-  useEffect(() => {
-    if (props.loggedIn) {
-      setEmail('');
-      setPassword('');
-    }
-  }, [props.loggedIn]);
+  const INPUTS_DATA = [
+    {
+      key: 1,
+      inputClassName: '',
+      labelClassName: '',
+      type: 'email',
+      id: 'email',
+      label: 'E-mail',
+      placeholder: 'E-mail',
+      name: 'email',
+      required: true,
+    },
+    {
+      key: 2,
+      inputClassName: '',
+      labelClassName: '',
+      type: 'password',
+      id: 'password',
+      label: 'Пароль',
+      placeholder: 'Пароль',
+      name: 'password',
+      minLength: 6,
+      required: true,
+    },
+  ];
 
-  useEffect(() => {
-    if (email && password && !emailError && !passwordError) {
-      setformValid(true);
-    } else {
-      setformValid(false);
+  const SUBMIT_BUTTON_SETTINGS = {
+    type: 'submit',
+    title: 'Войти',
+  };
+
+  const FORM_AUTH_QUESTION_SETTINGS = {
+    questionText: 'Ещё не зарегистрированы? ',
+  };
+
+  const ROUTE_LINK_SETTINGS = {
+    linkTitle: 'Регистрация',
+    linkPath: '/signup',
+  };
+
+  const TITLE_TEXT = 'Рады видеть!';
+
+  const LOGIN_STYLE_SETTINGS = {
+    main: 'login',
+    header: 'register__header',
+    title: 'register__title',
+  };
+
+  const errorHandler = () => {
+    if (tokenResStatus) {
+      switch (tokenResStatus) {
+        case 400:
+          setIsAuthError(true);
+          setAuthErrorText(LOGIN_ERRORS_TEXTS.TOKEN_BAD_REQUEST);
+          break;
+        case 401:
+          setIsAuthError(true);
+          setAuthErrorText(LOGIN_ERRORS_TEXTS.TOKEN_UNAUTHORIZED)
+          break;
+        case 500:
+          setIsAuthError(true);
+          setAuthErrorText(LOGIN_ERRORS_TEXTS.INTERNAL_SERVER);
+          break;
+        case 200:
+          setIsAuthError(false);
+          setAuthErrorText('');
+          resetForm();
+          break;
+        default:
+          setIsAuthError(true);
+          setAuthErrorText(LOGIN_ERRORS_TEXTS.TOKEN_BAD_REQUEST);
+          break;
+      };
     }
-  }, [email, password, emailError, passwordError]);
+
+    if (authResStatus) {
+      switch (authResStatus) {
+        case 400:
+        case 401:
+          setIsAuthError(true);
+          setAuthErrorText(LOGIN_ERRORS_TEXTS.BAD_REQUEST);
+          break;
+        case 500:
+          setIsAuthError(true);
+          setAuthErrorText(LOGIN_ERRORS_TEXTS.INTERNAL_SERVER);
+          break;
+        case 200:
+          setIsAuthError(false);
+          setAuthErrorText('');
+          resetForm();
+          break;
+        default:
+          setIsAuthError(true);
+          setAuthErrorText(LOGIN_ERRORS_TEXTS.BAD_REQUEST);
+          break;
+      };
+    };
+  };
+
+  React.useEffect(() => {
+    errorHandler();
+  }, [authResStatus, tokenResStatus]);
 
   return (
-    <>
-      <Form
-        name="Login"
-        id="form-login"
-        title={LOGIN_TITLE}
+    <main
+      className={LOGIN_STYLE_SETTINGS.main}
+    >
+      <AuthForm
+        titleText={TITLE_TEXT}
+        inputsData={INPUTS_DATA}
+        onChange={handleChange}
+        values={values}
+        errors={errors}
         onSubmit={handleSubmit}
-        Link={
-          <p className="form-login__request-text">
-            {LOGIN_REQUEST_TEXT}
-            <Link to="/sign-up" className="form-login__register-link">
-              {LOGIN_LINK_TEXT}
-            </Link>
-          </p>
-        }
-      >
-        <label className="form__field form__field-text">
-          E-mail
-          <input
-            id="email-input"
-            className={`form__item ${
-              emailError ? 'form__item-error' : 'form__item_color'
-            }`}
-            type="email"
-            value={email}
-            onChange={handleChangeEmail}
-            required
-          />
-          <span id="name-input-error" className="form__item-error">
-            {emailError}
-          </span>
-        </label>
-
-        <label className="form__field form__field-text">
-          Пароль
-          <input
-            id="password-input"
-            className={`form__item ${passwordError ? 'form__item-error' : ''}`}
-            type="password"
-            value={password}
-            onChange={handleChangePassword}
-            required
-          />
-          <span id="name-input-error" className="form__item-error">
-            {passwordError}
-          </span>
-        </label>
-
-        <div className="form__handlers">
-          <div className="form__item-error form__item-response">
-            {props.messege}
-          </div>
-          <button
-            className={`submit__button-form ${
-              !formValid ? 'submit__button-form_disabled' : ''
-            }`}
-            type="submit"
-            disabled={!formValid}
-          >
-            {LOGIN_BUTTON_TEXT}
-          </button>
-        </div>
-      </Form>
-    </>
-  );
+        submitButtonSettings={SUBMIT_BUTTON_SETTINGS}
+        formAuthQuestionSettings={FORM_AUTH_QUESTION_SETTINGS}
+        routeLinkSettings={ROUTE_LINK_SETTINGS}
+        formIsValid={isValid}
+        authErrorText={authErrorText}
+        isAuthError={isAuthError}
+        isLoadingData={isLoadingSignin}
+      />
+    </main>
+  )
 }
 
 export default Login;

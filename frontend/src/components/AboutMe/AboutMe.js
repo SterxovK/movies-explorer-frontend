@@ -1,83 +1,93 @@
 import React from 'react';
-import Photo from '../../images/photo.jpg';
-import {ReactComponent as PortfolioArrow} from '../../images/portfolio-arrow.svg'
+
+import MainArticle from '../MainArticle/MainArticle';
+
+import ArticleAboutMe from '../ArticleAboutMe/ArticleAboutMe';
+
+import Title from '../Title/Title';
+
+import AboutMeList from '../AboutMeList/AboutMeList';
+
+import AboutMePortrait from '../../images/AboutMe/about-me-portrait.jpg';
 
 function AboutMe() {
-  const ABOUT_ME_HEADER = 'Студент';
-  const ABOUT_ME_TITLE = 'Константин';
-  const ABOUT_ME_SUBTITLE = 'Фронтенд-разработчик, 32 года';
-  const ABOUT_ME_MAIN_TEXT =
-    'Я родился и живу в Ижевске, закончил факультет экономики УДГУ. Увлекся програмированием еще в школе, но профессионально решил заняться только сейчас. Прошел курс по веб-разработке от Яндекс-Практикум.';
-  const PORTFOLIO = 'Портфолио';
 
-  const ABOUT_ME_LINKS = [
+  const ABOUT_ME_TITLE = 'Студент';
+
+  const ABOUT_ME_ARTICLES_DATA = [
     {
       id: 1,
-      name: 'Telegram',
-      link: 'https://t.me/Sterxovk',
-    },
-    {
-      id: 2,
-      name: 'Github',
-      link: 'https://github.com/SterxovK',
+      title: "Константин",
+      subTitle: "Фронтенд-разработчик, 32 лет",
+      text: "Я работаю и живу в Ижевске. Люблю путешествия и кулинарию. Во время своей учебы я реализовал 15 проектных работ на Reactjs, Nodejs (Expressjs), JavaScript, CSS, HTML. По каждой работе было проведено код-ревью командой Практикума. В работе для меня важно учиться новому и помогать в этом своим коллегам.",
+      linksTitle: "Портфолио",
+      links: [
+        {
+          id: 1,
+          title: "Telegram",
+          link: "https://t.me/Sterxovk",
+        },
+        {
+          id: 2,
+          title: "Github",
+          link: "https://github.com/SterxovK",
+        },
+      ],
+      images: [
+        {
+          id: 1,
+          src: AboutMePortrait,
+          alt: "портрет студента Алексея",
+        },
+      ],
     },
   ];
 
-  const ABOUT_ME_PORTFOLIO_LINKS = [
-    {
-      id: 1,
-      name: 'Статичный сайт',
-      link: 'https://github.com/SterxovK/how-to-learn',
-    },
-    {
-      id: 2,
-      name: 'Адаптивный сайт',
-      link: 'https://github.com/SterxovK/russian-travel',
-    },
-    {
-      id: 3,
-      name: 'Одностраничное приложение',
-      link: 'https://github.com/SterxovK/mesto',
-    },
-  ];
+  const ABOUT_ME_ARTICLE_STYLES = {
+    article: 'about-me-article',
+    articleHeader: 'about-me-article__header',
+    articleItemsSection: 'about-me-article__items-section',
+    articleSection: 'about-me-article__section',
+  };
 
-  const AboutMeLinks = ABOUT_ME_LINKS.map((item) => (
-    <li className="about-me__points" key={item.id}>
-      <a className="about-me__link" href={item.link}>
-        <p className="about-me__name-link">{item.name}</p>
-      </a>
-    </li>
-  ));
+  const ABOUT_ME_ARTICLE_ID = 'student';
 
-  const AboutMePortfolioLink = ABOUT_ME_PORTFOLIO_LINKS.map((item) => (
-    <li className="about-me__portfolio-points" key={item.id}>
-      <a className="about-me__portfolio-link" href={item.link} target="_blank" rel="noreferrer">
-        <p className="about-me__portfolio-name-link">{item.name}</p>
-        <PortfolioArrow />
-      </a>
-    </li>
+  const articlesMeMarkup = ABOUT_ME_ARTICLES_DATA.map((item) => (
+    <ArticleAboutMe
+      key={item.id}
+      title={item.title}
+      subTitle={item.subTitle}
+      text={item.text}
+      linksTitle={item.linksTitle}
+      links={item.links}
+      images={item.images}
+    />
   ));
 
   return (
-    <section className="about-me">
-      <h2 className="about-me__header">{ABOUT_ME_HEADER}</h2>
-      <div className="about-me_container">
-        <h3 className="about-me__title">{ABOUT_ME_TITLE}</h3>
-        <p className="about-me__subtitle">{ABOUT_ME_SUBTITLE}</p>
-        <p className="about-me__main-text">{ABOUT_ME_MAIN_TEXT}</p>
-        <img className="about-me__photo" src={Photo} alt="Фото студента" />
-        <article className="about-me__links-container">
-          <ul className="about-me__links-content">{AboutMeLinks}</ul>
-        </article>
-      </div>
-      <h4 className="about-me__portfolio-links-title">{PORTFOLIO}</h4>
-      <article className="about-me__portfolio-links-container">
-        <ul className="about-me__portfolio-links-content">
-          {AboutMePortfolioLink}
-        </ul>
-      </article>
-    </section>
-  );
+    <MainArticle
+      id={ABOUT_ME_ARTICLE_ID}
+      className={ABOUT_ME_ARTICLE_STYLES.article}
+    >
+      <MainArticle.Header
+        className={ABOUT_ME_ARTICLE_STYLES.articleHeader}
+      >
+        <Title
+          title={ABOUT_ME_TITLE}
+        />
+      </MainArticle.Header>
+      <MainArticle.ArticlesSection
+        className={ABOUT_ME_ARTICLE_STYLES.articleItemsSection}
+      >
+        {articlesMeMarkup}
+      </MainArticle.ArticlesSection>
+      <MainArticle.Section
+        className={ABOUT_ME_ARTICLE_STYLES.articleSection}
+      >
+        <AboutMeList />
+      </MainArticle.Section>
+    </MainArticle>
+  )
 }
 
 export default AboutMe;

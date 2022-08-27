@@ -3,31 +3,35 @@
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 70px 0 0 0;
   box-sizing: border-box;
+  padding: 70px 70px 30px 70px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px 24px;
   justify-items: center;
 }
 
-.movies-card {
-  max-width: 364px;
-  border-radius: 6px;
-  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.08);
-}
-
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 1279px) {
   .movies-card-list {
+    padding-left: 30px;
+    padding-right: 30px;
     grid-template-columns: repeat(2, 1fr);
     gap: 36px 30px;
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1023px) {
   .movies-card-list {
     padding-top: 40px;
-    grid-template-columns: repeat(1, 1fr);
+    padding-left: 10px;
+    padding-right: 10px;
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .movies-card-list {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
