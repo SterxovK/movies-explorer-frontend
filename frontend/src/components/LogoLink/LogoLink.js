@@ -1,6 +1,7 @@
 import React from 'react';
-import { ReactComponent as Logo } from '../../images/logo.svg';
 import { Link } from 'react-router-dom';
+
+import { ReactComponent as LogoImage } from '../../images/Logo/logo.svg';
 
 const LOGO_SETTINGS = {
   ARIA_LABEL: 'перейти на страницу о проекте',
@@ -9,14 +10,14 @@ const LOGO_SETTINGS = {
 
 const LogoLink = React.memo(() => {
   return (
-    <Link
-      className="logo-link"
-      to={LOGO_SETTINGS.PATH}
-      aria-label={LOGO_SETTINGS.ARIA_LABEL}
-    >
-      <Logo />
-    </Link>
-  );
+      <Link
+        className="logo-link"
+        to={LOGO_SETTINGS.PATH}
+        aria-label={LOGO_SETTINGS.ARIA_LABEL}
+      >
+        <LogoImage />
+      </Link>
+  )
 });
 
 export default LogoLink;

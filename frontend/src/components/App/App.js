@@ -6,21 +6,18 @@ import {
   useHistory,
 } from 'react-router-dom';
 
-import CurrentUserContext from '../../context/CurrentUserContext';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
+
 import mainApi from '../../utils/MainApi';
 
 import moviesApi from '../../utils/MoviesApi';
 
 import searchFilter from '../../utils/searchFilter';
 
-import {
-  AUTH_SUCCESS_TEXT,
-  SAVE_MOVIE_ERROR_TEXT,
-  DELETE_MOVIE_ERROR_TEXT,
-  PROFILE_UPDATE_SUCCESS_TEXT,
-} from '../../constants/constants-text';
-
-
+import AUTH_SUCCESS_TEXTS from '../../constants/auth-success-texts';
+import SAVE_MOVIE_ERROR_TEXTS from '../../constants/save-movie-error-texts';
+import DELETE_MOVIE_ERROR_TEXTS from '../../constants/delete-movie-error-texts';
+import PROFILE_UPDATE_SUCCESS_TEXT from '../../constants/profile-update-success-text';
 
 import Header from '../Header/Header';
 import Main from '../Main/Main';
@@ -29,20 +26,20 @@ import SavedMovies from '../SavedMovies/SavedMovies';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
-import Footer from '../Footer/Footer';
-import PageNotFound from '../PageNotFound/PageNotFound';
+import Footer from '../Footer/Footer'
+import NotFound from '../NotFound/NotFound';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import Preloader from '../Preloader/Preloader';
 import Menu from '../Menu/Menu';
 import NotificationModal from '../NotificationModal/NotificationModal';
+
 
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [isLoadingData, setIsLoadingData] = React.useState(true);
 
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
-  const [notificationModalIsOpen, setNotificationModalIsOpen] =
-    React.useState(false);
+  const [notificationModalIsOpen, setNotificationModalIsOpen] = React.useState(false);
 
   const [notificationText, setNotificationText] = React.useState('');
 
@@ -60,51 +57,45 @@ function App() {
   const [isLoadingMoviesData, setIsLoadingMoviesData] = React.useState(false);
   const [isLoadingSignin, setIsLoadingSignin] = React.useState(false);
   const [isLoadingSignup, setIsLoadingSignup] = React.useState(false);
-  const [isLoadingUpdateCurrentUser, setIsLoadingUpdateCurrentUser] =
-    React.useState(false);
+  const [isLoadingUpdateCurrentUser, setIsLoadingUpdateCurrentUser] = React.useState(false);
 
   const [authResStatus, setAuthResStatus] = React.useState(null);
   const [tokenAuthResStatus, setTokenAuthResStatus] = React.useState(null);
-  const [registrationResStatus, setRegistrationResStatus] =
-    React.useState(null);
-  const [updateCurrentUserResStatus, setUpdateCurrentUserResStatus] =
-    React.useState(null);
+  const [registrationResStatus, setRegistrationResStatus] = React.useState(null);
+  const [updateCurrentUserResStatus, setUpdateCurrentUserResStatus] = React.useState(null);
   const [moviesApiResStatus, setMoviesApiResStatus] = React.useState(null);
-  const [getSavedMoviesResStatus, setGetSavedMoviesResStatus] =
-    React.useState(null);
+  const [getSavedMoviesResStatus, setGetSavedMoviesResStatus] = React.useState(null);
 
   const history = useHistory();
 
   const handleSignup = (data) => {
     setIsLoadingSignup(true);
-    mainApi
-      .register(data)
+    mainApi.register(data)
       .then((res) => {
         setRegistrationResStatus(res.status);
         handleSignin({
           email: data.email,
-          password: data.password,
-        });
+          password: data.password
+        },);
       })
       .catch((err) => {
         setRegistrationResStatus(err);
       })
       .finally(() => {
         setIsLoadingSignup(false);
-      });
+      })
   };
 
   const handleSignin = (data) => {
     setIsLoadingSignin(true);
-    mainApi
-      .authorize(data)
+    mainApi.authorize(data)
       .then((res) => {
         setAuthResStatus(res.status);
         localStorage.setItem('jwt', res.data.token);
         setLoggedIn(true);
         history.push('/movies');
         setOpenNotificationModal();
-        setNotificationText(AUTH_SUCCESS_TEXT.BASE_TEXT);
+        setNotificationText(AUTH_SUCCESS_TEXTS.BASE_TEXT);
       })
       .then(() => {
         checkToken();
@@ -114,7 +105,7 @@ function App() {
       })
       .finally(() => {
         setIsLoadingSignin(false);
-      });
+      })
   };
 
   const handleSignOut = (evt) => {
@@ -130,25 +121,23 @@ function App() {
   const checkToken = () => {
     const token = localStorage.getItem('jwt');
     if (token) {
-      mainApi
-        .checkToken(token)
+      mainApi.checkToken(token)
         .then((res) => {
           setTokenAuthResStatus(res.status);
           setCurrentUserData(res.data);
           setLoggedIn(true);
         })
         .catch((err) => {
-          setTokenAuthResStatus(err);
-        });
+          setTokenAuthResStatus(err)
+        })
     }
-  };
+  }
 
   const handleUpdateCurrenUser = (data) => {
     const token = localStorage.getItem('jwt');
     if (token) {
       setIsLoadingUpdateCurrentUser(true);
-      mainApi
-        .updateCurrentUserProfile(data, token)
+      mainApi.updateCurrentUserProfile(data, token)
         .then((res) => {
           setCurrentUserData(res.data);
           setUpdateCurrentUserResStatus(res.status);
@@ -161,8 +150,8 @@ function App() {
         })
         .finally(() => {
           setIsLoadingUpdateCurrentUser(false);
-        });
-    }
+        })
+    };
   };
 
   const handleSearchMoviesData = (searchQueries = {}) => {
@@ -176,24 +165,17 @@ function App() {
         setIsNoMoviesFound(false);
       }
 
-      localStorage.setItem(
-        'filtered-previously-movies',
-        JSON.stringify(markAsSaved(filteredMovies))
-      );
+      localStorage.setItem('filtered-previously-movies', JSON.stringify(markAsSaved(filteredMovies)));
 
       setMoviesData(markAsSaved(filteredMovies));
     }
   };
 
-  const handleSearchSavedMoviesData = (
-    searchQueries = {},
-    isAfterDelete = false
-  ) => {
+  const handleSearchSavedMoviesData = (searchQueries = {}, isAfterDelete = false) => {
     const token = localStorage.getItem('jwt');
 
-    if (token) {
-      mainApi
-        .getSavedMovies(token)
+    if (token){
+      mainApi.getSavedMovies(token)
         .then((res) => {
           setGetSavedMoviesResStatus(res.status);
 
@@ -206,42 +188,36 @@ function App() {
           }
 
           const savedMoviesData = res.data.reverse();
+          const filteredSavedMovies = searchFilter(searchQueries, savedMoviesData);
 
-          const filteredSavedMovies = searchFilter(
-            searchQueries,
-            savedMoviesData
-          );
 
           if (filteredSavedMovies.length === 0) {
             setIsNoSavedMoviesFound(true);
           } else {
             setIsNoSavedMoviesFound(false);
           }
-          setFoundSavedMoviesData(filteredSavedMovies);
+          setFoundSavedMoviesData(filteredSavedMovies)
         })
         .catch((err) => {
           console.log(err);
-          setMoviesApiResStatus(err);
-        });
+          setMoviesApiResStatus(err)
+        })
     }
-  };
+  }
 
   React.useEffect(() => {
     checkToken();
     const token = localStorage.getItem('jwt');
     if (token) {
       setIsLoadingMoviesData(true);
-      moviesApi
-        .getMoviesData()
+      moviesApi.getMoviesData()
         .then((res) => {
           setMoviesApiResStatus(res.status);
 
           const moviesData = res.data;
 
           const localMoviesData = JSON.parse(localStorage.getItem('movies'));
-          const renderedPrevMovies = JSON.parse(
-            localStorage.getItem('filtered-previously-movies')
-          );
+          const renderedPrevMovies = JSON.parse(localStorage.getItem('filtered-previously-movies'));
 
           if (renderedPrevMovies) {
             setMoviesData(markAsSaved(renderedPrevMovies));
@@ -255,13 +231,13 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
-          setMoviesApiResStatus(err);
+          setMoviesApiResStatus(err)
         })
         .finally(() => {
           setIsLoadingMoviesData(false);
-        });
+        })
     }
-  }, [loggedIn]);
+  }, [loggedIn])
 
   const getInitialSavedMoviesIds = () => {
     const initialSavedMoviesIds = [];
@@ -276,38 +252,38 @@ function App() {
   const markAsSaved = (foundMoviesArr) => {
     const initialSavedMoviesIdsArr = getInitialSavedMoviesIds();
     foundMoviesArr.forEach((foundMovie) => {
-      foundMovie.saved = initialSavedMoviesIdsArr.some(
-        (savedMovieId) => savedMovieId === foundMovie.id
-      );
-    });
+      foundMovie.saved = initialSavedMoviesIdsArr.some((savedMovieId) => savedMovieId === foundMovie.id);
+    })
 
     foundSavedMoviesData.forEach((savedMovie) => {
       foundMoviesArr.forEach((foundMovie) => {
         if (foundMovie.id === savedMovie.movieId) {
           foundMovie._id = savedMovie._id;
         }
-      });
-    });
+      })
+    })
     return foundMoviesArr;
-  };
+  }
 
   const handleSaveFavoriteMovie = (data) => {
     const token = localStorage.getItem('jwt');
     if (token) {
-      mainApi
-        .saveMovie(data, token)
-        .then((res) => {})
+      mainApi.saveMovie(data, token)
+        .then((res) => {
+          console.log(res)
+        })
         .catch((err) => {
           setOpenNotificationModal();
-          setNotificationText(`${SAVE_MOVIE_ERROR_TEXT.BASE_TEXT} ${err}`);
+          setNotificationText(`${SAVE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`)
           console.log(err);
         })
         .finally(() => {
           handleSearchSavedMoviesData();
-        });
+          console.log('yes')
+        })
     } else {
       history.push('/signin');
-    }
+    };
   };
 
   const markAsUnsaved = (id) => {
@@ -318,29 +294,28 @@ function App() {
           delete movie._id;
         }
       }
-    });
-  };
+    })
+  }
 
   const handleDeleteSavedMovie = (id) => {
     const token = localStorage.getItem('jwt');
 
     if (token) {
-      mainApi
-        .deleteSavedMovie(id, token)
+      mainApi.deleteSavedMovie(id, token)
         .then((res) => {
           markAsUnsaved(id);
         })
         .catch((err) => {
           setOpenNotificationModal();
-          setNotificationText(`${DELETE_MOVIE_ERROR_TEXT.BASE_TEXT} ${err}`);
+          setNotificationText(`${DELETE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`)
           console.log(err);
         })
         .finally(() => {
           const isAfterDelete = true;
           handleSearchSavedMoviesData(isAfterDelete);
-        });
-    }
-  };
+        })
+    };
+  }
 
   const setOpenMenu = () => {
     setMenuIsOpen(true);
@@ -352,18 +327,26 @@ function App() {
 
   const setOpenNotificationModal = () => {
     setNotificationModalIsOpen(true);
-  };
+  }
 
   const setCloseNotificationModal = () => {
     setNotificationText('');
     setNotificationModalIsOpen(false);
-  };
+  }
 
-  const exclusionRoutesPathsAuthArray = ['/signin', '/signup'];
+  const exclusionRoutesPathsAuthArray = [
+    '/signin',
+    '/signup',
+  ];
 
-  const exclusionRoutesPathsArrayFooter = ['/signin', '/signup', '/profile'];
+  const exclusionRoutesPathsArrayFooter = [
+    '/signin',
+    '/signup',
+    '/profile',
+  ];
 
   React.useEffect(() => {
+
     const handleWindowLoad = () => {
       setIsLoadingData(false);
     };
@@ -371,17 +354,28 @@ function App() {
     window.addEventListener('load', handleWindowLoad);
 
     return () => window.removeEventListener('load', handleWindowLoad);
-  }, []);
+  }, [])
 
   return (
     <CurrentUserContext.Provider value={currentUserData}>
-      <div className="page">
+      <div className="app">
         {useRouteMatch(exclusionRoutesPathsAuthArray) ? null : (
-          <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
+          <Header
+            loggedIn={loggedIn}
+            onOpenMenu={setOpenMenu}
+          />
         )}
         <Switch>
-          <Route exact path="/">
-            {isLoadingData ? <Preloader /> : <Main />}
+          <Route
+            exact
+            path="/"
+          >
+            {isLoadingData ? (
+              <Preloader />
+            ) : (
+              <Main />
+            )}
+
           </Route>
           <ProtectedRoute
             path="/movies"
@@ -419,32 +413,41 @@ function App() {
             updUserResStatus={updateCurrentUserResStatus}
             component={Profile}
           />
-          <Route path="/signup">
+          <Route
+            path="/signup"
+          >
             <Register
-              onRegister={handleSignup}
+              onSignup={handleSignup}
               regResStatus={registrationResStatus}
               authResStatus={authResStatus}
-              isLoadingSignup={
-                isLoadingSignup || isLoadingData || isLoadingSignin
-              }
+              isLoadingSignup={isLoadingSignup || isLoadingData || isLoadingSignin}
             />
           </Route>
-          <Route path="/signin">
+          <Route
+            path="/signin"
+          >
             <Login
-              onLogin={handleSignin}
+              onSignin={handleSignin}
               authResStatus={authResStatus}
               tokenResStatus={tokenAuthResStatus}
-              isLoadingSignin={
-                isLoadingSignup || isLoadingData || isLoadingSignin
-              }
+              isLoadingSignin={isLoadingSignup || isLoadingData || isLoadingSignin}
             />
           </Route>
-          <Route path="*">
-            <PageNotFound />
+          <Route
+            path="*"
+          >
+            <NotFound />
           </Route>
         </Switch>
-        {useRouteMatch(exclusionRoutesPathsArrayFooter) ? null : <Footer />}
-        {menuIsOpen && <Menu isOpen={menuIsOpen} onClose={setCloseMenu} />}
+        {useRouteMatch(exclusionRoutesPathsArrayFooter) ? null : (
+          <Footer />
+        )}
+        {menuIsOpen && (
+          <Menu
+            isOpen={menuIsOpen}
+            onClose={setCloseMenu}
+          />
+        )}
         {notificationModalIsOpen && (
           <NotificationModal
             isOpen={notificationModalIsOpen}

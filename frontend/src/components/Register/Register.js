@@ -1,158 +1,140 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Form from '../Form/Form';
+import React from 'react';
 
-function Register(props) {
-  const REGISTER_TITLE = 'Добро пожаловать!';
-  const REGISTER_BUTTON_TEXT = 'Зарегистрироваться';
-  const REGISTER_REQUEST_TEXT = 'Уже зарегистрированы?';
-  const REGISTER_LINK_TEXT = 'Войти';
+import AuthForm from '../AuthForm/AuthForm';
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [nameError, setNameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [formValid, setformValid] = useState(false);
+import useFormWithValidation from '../../hooks/useFormValidation';
 
-  const handleChangeName = (evt) => {
-    const validName = /^[a-zA-Z- ]+$/.test(evt.target.value);
+import REGISTRATION_ERRORS_TEXTS from '../../constants/registration-errors-texts';
 
-    if (evt.target.value.length < 2) {
-      setNameError('Длина имени должна быть не менее 2 символов');
-    } else if (evt.target.value.length > 30) {
-      setNameError('Длина имени должна должна быть не более 30 символов');
-    } else if (!validName) {
-      setNameError('Имя должно быть написано латиницей');
-    } else {
-      setNameError('');
-    }
-    setName(evt.target.value);
-  };
+function Register({
+  onSignup,
+  regResStatus,
+  isLoadingSignup,
+}) {
 
-  const handleChangeEmail = (evt) => {
-    const validEmail = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i.test(
-      evt.target.value
-    );
+  const [isRegistrationError, setIsRegistrationError] = React.useState(false);
+  const [registrationErrorText, setRegistrationErrorText] = React.useState('');
 
-    if (!validEmail) {
-      setEmailError('Неверный формат почты');
-    } else {
-      setEmailError('');
-    }
-    setEmail(evt.target.value);
-  };
-
-  const handleChangePassword = (evt) => {
-    if (evt.target.value.length < 6) {
-      setPasswordError('Пароль должен быть не менее 6 символов');
-    } else {
-      setPasswordError('');
-    }
-    setPassword(evt.target.value);
-  };
+  const {
+    values,
+    errors,
+    isValid,
+    handleChange,
+    resetForm
+  } = useFormWithValidation({});
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    if (!email || !password) {
-      return;
-    }
-    props.onRegister(name, email, password);
+    onSignup(values);
   };
 
-  useEffect(() => {
-    if (
-      name &&
-      email &&
-      password &&
-      !nameError &&
-      !emailError &&
-      !passwordError
-    ) {
-      setformValid(true);
-    } else {
-      setformValid(false);
-    }
-  }, [name, email, password, nameError, emailError, passwordError]);
+  const INPUTS_DATA = [
+    {
+      key: 1,
+      type: 'text',
+      id: 'name',
+      label: 'Имя',
+      placeholder: 'Имя',
+      name: 'name',
+      required: true,
+      regexp: '[a-zA-Z -]{2,30}',
+      customErrorMessage: 'Поле name может содержать только латиницу, пробел или дефис: a-zA-Z -',
+    },
+    {
+      key: 2,
+      inputClassName: '',
+      labelClassName: '',
+      type: 'email',
+      id: 'email',
+      label: 'E-mail',
+      placeholder: 'E-mail',
+      name: 'email',
+      required: true,
+    },
+    {
+      key: 3,
+      inputClassName: '',
+      labelClassName: '',
+      type: 'password',
+      id: 'password',
+      label: 'Пароль',
+      placeholder: 'Пароль',
+      name: 'password',
+      minLength: 8,
+      maxLength: 30,
+      required: true,
+    },
+  ];
+
+  const SUBMIT_BUTTON_SETTINGS = {
+    type: 'submit',
+    title: 'Зарегистрироваться',
+  };
+
+  const FORM_AUTH_QUESTION_SETTINGS = {
+    questionText: 'Уже зарегистрированы? ',
+  };
+
+  const ROUTE_LINK_SETTINGS = {
+    linkTitle: 'Войти',
+    linkPath: '/signin',
+  };
+
+  const REGISTER_STYLE_SETTINGS = {
+    main: 'register',
+  };
+
+  const TITLE_TEXT = 'Добро пожаловать!';
+
+  const errorHandler = () => {
+    if (regResStatus) {
+      switch (regResStatus) {
+        case 409:
+          setIsRegistrationError(true);
+          setRegistrationErrorText(REGISTRATION_ERRORS_TEXTS.CONFLICT_EMAIL);
+          break;
+        case 400:
+          setIsRegistrationError(true);
+          setRegistrationErrorText(REGISTRATION_ERRORS_TEXTS.BAD_REQUEST);
+          break;
+        case 200:
+          setIsRegistrationError(false);
+          setRegistrationErrorText('');
+          resetForm();
+          break;
+        default:
+          setIsRegistrationError(true);
+          setRegistrationErrorText(REGISTRATION_ERRORS_TEXTS.BAD_REQUEST);
+          break;
+      };
+    };
+  };
+
+  React.useEffect(() => {
+    errorHandler();
+  }, [regResStatus]);
 
   return (
-    <>
-      <Form
-        name="Register"
-        id="form-register"
-        title={REGISTER_TITLE}
+    <main
+      className={REGISTER_STYLE_SETTINGS.main}
+    >
+      <AuthForm
+        titleText={TITLE_TEXT}
+        inputsData={INPUTS_DATA}
+        onChange={handleChange}
+        values={values}
+        errors={errors}
         onSubmit={handleSubmit}
-        Link={
-          <p className="form-login__request-text">
-            {REGISTER_REQUEST_TEXT}
-            <Link to="/signin" className="form-login__register-link">
-              {REGISTER_LINK_TEXT}
-            </Link>
-          </p>
-        }
-      >
-        <label className="form__field form__field-text">
-          Имя
-          <input
-            id="name-input"
-            className="form__item"
-            type="text"
-            value={name}
-            onChange={handleChangeName}
-            required
-          />
-          <span id="name-input-error" className="form__item-error">
-            {nameError}
-          </span>
-        </label>
-        <label className="form__field form__field-text">
-          E-mail
-          <input
-            id="email-input"
-            className="form__item"
-            type="email"
-            value={email}
-            onChange={handleChangeEmail}
-            required
-          />
-          <span id="name-input-error" className="form__item-error">
-            {emailError}
-          </span>
-        </label>
-
-        <label className="form__field form__field-text">
-          Пароль
-          <input
-            id="password-input"
-            className="form__item"
-            type="password"
-            value={password}
-            onChange={handleChangePassword}
-            required
-          />
-          <span id="name-input-error" className="form__item-error">
-            {passwordError}
-          </span>
-        </label>
-
-        <div className="form__handlers">
-          <div className="form__item-error form__item-response">
-            {props.messege}
-          </div>
-          <button
-            className={`submit__button-form ${
-              !formValid ? 'submit__button-form_disabled' : ''
-            }`}
-            type="submit"
-            disabled={!formValid}
-          >
-            {REGISTER_BUTTON_TEXT}
-          </button>
-        </div>
-      </Form>
-    </>
-  );
+        submitButtonSettings={SUBMIT_BUTTON_SETTINGS}
+        formAuthQuestionSettings={FORM_AUTH_QUESTION_SETTINGS}
+        routeLinkSettings={ROUTE_LINK_SETTINGS}
+        formIsValid={isValid}
+        authErrorText={registrationErrorText}
+        isAuthError={isRegistrationError}
+        isLoadingData={isLoadingSignup}
+      />
+    </main>
+  )
 }
 
 export default Register;

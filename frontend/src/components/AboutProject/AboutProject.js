@@ -1,9 +1,17 @@
 import React from 'react';
 
+import MainArticle from '../MainArticle/MainArticle';
+
+import Title from '../Title/Title';
+
+import ArticleAbout from '../ArticleAbout/ArticleAbout';
+
+import Chart from '../Chart/Chart';
+
 function AboutProject() {
   const ABOUT_PROJECT_TITLE = 'О проекте';
 
-  const ABOUT_PROJECT_DATA = [
+  const ABOUT_PROJECT_ARTICLES_DATA = [
     {
       id: 1,
       title: 'Дипломный проект включал 5 этапов',
@@ -16,53 +24,71 @@ function AboutProject() {
     },
   ];
 
+  const TOTAL_UNITS_OF_TIME_SPENT = 5;
+
   const CHART_DATA = [
     {
       id: 1,
-      unitText: '1 неделя',
-      subText: 'Back-end',
-      background: '#000',
-      color: '#fff',
+      numOfUnitsOfTimeSpent: 1,
+      timeUnitText: "неделя",
+      subText: "Back-end",
+      color: "#000",
+      textColor: "#fff",
     },
     {
       id: 2,
-      unitText: '4 недели',
-      subText: 'Front-end',
-      background: '#F2F2F2',
-      color: '#000',
+      numOfUnitsOfTimeSpent: 4,
+      timeUnitText: "недели",
+      subText: "Front-end",
+      color: "#F2F2F2",
+      textColor: "#000",
     },
   ];
 
-  const AboutProject = ABOUT_PROJECT_DATA.map((article) => (
-    <li className="about-project__points" key={article.id}>
-      <h3 className="about-project__title">{article.title}</h3>
-      <p className="about-project__text">{article.text}</p>
-    </li>
+  const articlesAboutMarkup = ABOUT_PROJECT_ARTICLES_DATA.map((item) => (
+    <ArticleAbout
+      key={item.id}
+      title={item.title}
+      text={item.text}
+    />
   ));
 
-  const AboutTimeProject = CHART_DATA.map((item) => (
-    <li className="about-time-project__points" key={item.id}>
-      <h4
-        className="about-time-project__title"
-        style={{ background: item.background, color: item.color }}
-      >
-        {item.unitText}
-      </h4>
-      <p className="about-time-project__text">{item.subText}</p>
-    </li>
-  ));
+  const ABOUT_PROJECT_ARTICLE_STYLES = {
+    article: 'about-project-article',
+    articleHeader: 'about-project-article__header',
+    articleItemsSection: 'about-page-arcticle__items-section',
+    articleSection: 'about-page-arcticle__section',
+  };
+
+  const TECHS_ARTICLE_ID = 'about-project';
 
   return (
-    <section className="about-project">
-      <h2 className="about-project__header">{ABOUT_PROJECT_TITLE}</h2>
-      <article className="about-project__container">
-        <ul className="about-project__content">{AboutProject}</ul>
-      </article>
-      <article className="about-time-project__container">
-        <ul className="about-time-project__content">{AboutTimeProject}</ul>
-      </article>
-    </section>
-  );
+    <MainArticle
+      id={TECHS_ARTICLE_ID}
+      className={ABOUT_PROJECT_ARTICLE_STYLES.article}
+    >
+      <MainArticle.Header
+        className={ABOUT_PROJECT_ARTICLE_STYLES.articleHeader}
+      >
+        <Title
+          title={ABOUT_PROJECT_TITLE}
+        />
+      </MainArticle.Header>
+      <MainArticle.ArticlesSection
+        className={ABOUT_PROJECT_ARTICLE_STYLES.articleItemsSection}
+      >
+        {articlesAboutMarkup}
+      </MainArticle.ArticlesSection>
+      <MainArticle.Section
+        className={ABOUT_PROJECT_ARTICLE_STYLES.articleSection}
+      >
+        <Chart
+          data={CHART_DATA}
+          totalUnitsOfTimeSpent={TOTAL_UNITS_OF_TIME_SPENT}
+        />
+      </MainArticle.Section>
+    </MainArticle>
+  )
 }
 
 export default AboutProject;

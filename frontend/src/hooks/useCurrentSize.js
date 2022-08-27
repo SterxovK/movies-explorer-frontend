@@ -1,33 +1,34 @@
-import React from "react";
+import React from 'react';
 
 const getWidth = () => {
-    return document.documentElement.clientWidth;
+  return document.documentElement.clientWidth;
 };
 
 function useCurrentSize() {
-    const [size, setSize] = React.useState({
-        width: getWidth(),
-    });
+  const [size, setSize] = React.useState({
+    width: getWidth(),
+  });
 
-    React.useEffect(() => {
-        let timeOutId = null;
+  React.useEffect(() => {
 
-        const handleResize = () => {
-            clearTimeout(timeOutId);
+    let timeOutId = null;
 
-            timeOutId = setTimeout(() => {
-                setSize({
-                    width: getWidth(),
-                });
-            }, 150);
-        };
+    const handleResize = () => { //debounce function
+      clearTimeout(timeOutId);
 
-        window.addEventListener('resize', handleResize);
+      timeOutId = setTimeout(() => {
+        setSize({
+          width: getWidth(),
+        });
+      }, 150);
+    };
 
-        return () => window.removeEventListener('resize', handleResize);
-    }, [])
+    window.addEventListener('resize', handleResize);
 
-    return size;
+    return () => window.removeEventListener('resize', handleResize);
+  }, [])
+
+  return size;
 }
 
 export default useCurrentSize;

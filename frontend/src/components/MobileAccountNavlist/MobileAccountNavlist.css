@@ -10,7 +10,7 @@
   }
 
   .mobile-account-nav__link {
-    font-family: "Inter", Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     font-weight: normal;
     font-style: normal;
     font-size: 14px;
@@ -23,9 +23,10 @@
   }
 
   .mobile-account-nav__link-icon {
-    padding: 8px;
-    background: #f9f9f9;
+    padding: 8px 7px;
+    background: #F9F9F9;
     border-radius: 4px;
     margin-left: 17px;
   }
 }
+

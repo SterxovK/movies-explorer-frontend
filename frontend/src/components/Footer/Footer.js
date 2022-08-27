@@ -1,47 +1,42 @@
 import React from 'react';
 
+import FooterList from '../FooterList/FooterList';
+
 function Footer() {
-  const FOOTER_HEADER = 'Учебный проект Яндекс.Практикум х BeatFilm.';
-  const FOOTER_COPYRIGHT = '© 2022';
- 
-  const FOOTER_LINKS = [
-    {
-      id: 1,
-      name: 'Яндекс.Практикум',
-      link: 'https://practicum.yandex.ru/web',
-    },
 
-    {
-      id: 2,
-      name: 'Telegram',
-      link: 'https://t.me/Sterxovk',
-    },
-    {
-      id: 3,
-      name: 'Github',
-      link: 'https://github.com/SterxovK',
-    },
-  ];
+  const FOOTER_TITLE = 'Учебный проект Яндекс.Практикум х BeatFilm.';
 
-  const FooterLinks = FOOTER_LINKS.map((item) => (
-    <li className="footer__points" key={item.id}>
-      <a className="footer__link" href={item.link}>
-        <p className="footer__name-link">{item.name}</p>
-      </a>
-    </li>
-  ));
+  const COPYRIGHT_TEXT = '© 2020';
+
+  const FOOTER_STYLE_SETTINGS = {
+    footer: 'footer',
+    footerTitle: 'footer__title',
+    footerContainer: 'footer__container',
+    footerText: 'footer__text',
+  };
 
   return (
-    <footer className="footer">
-      <h3 className="footer__header">{FOOTER_HEADER}</h3>
-      <div className="footer_container">
-        <p className="footer__copyright">{FOOTER_COPYRIGHT}</p>
-        <ul className="footer__links-content">
-          {FooterLinks}
-        </ul>
-        </div>
+    <footer
+      className={FOOTER_STYLE_SETTINGS.footer}
+    >
+      <h2
+        className={FOOTER_STYLE_SETTINGS.footerTitle}
+      >
+        {FOOTER_TITLE}
+      </h2>
+      <div
+        className={FOOTER_STYLE_SETTINGS.footerContainer}
+      >
+        <p
+          className={FOOTER_STYLE_SETTINGS.footerText}
+        >
+          {COPYRIGHT_TEXT}
+        </p>
+        <FooterList />
+      </div>
+
     </footer>
-  );
+  )
 }
 
 export default Footer;

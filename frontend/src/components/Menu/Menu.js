@@ -1,10 +1,13 @@
 import React from 'react';
-
 import Modal from '../Modal/Modal';
-import MobileAccountNavlist from '../MobileAccountNavlist/MobileAccountNavlist';
 import MobileNavigation from '../MobileNavigation/MobileNavigation';
+import MobileAccountNavList from '../MobileAccountNavList/MobileAccountNavList';
 
-function Menu({ isOpen, onClose }) {
+function Menu({
+  isOpen,
+  onClose,
+}) {
+
   const STYLE_SETTINGS = {
     overlay: 'menu-modal',
     container: 'menu-modal__container',
@@ -16,16 +19,24 @@ function Menu({ isOpen, onClose }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} styleSettings={STYLE_SETTINGS}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      styleSettings={STYLE_SETTINGS}
+    >
       <Modal.Header />
       <Modal.Body>
-        <MobileNavigation onModalClose={onClose} />
+        <MobileNavigation
+          onModalClose={onClose}
+        />
       </Modal.Body>
       <Modal.Footer>
-        <MobileAccountNavlist onModalClose={onClose} />
+        <MobileAccountNavList
+          onModalClose={onClose}
+        />
       </Modal.Footer>
     </Modal>
-  );
+  )
 }
 
 export default Menu;

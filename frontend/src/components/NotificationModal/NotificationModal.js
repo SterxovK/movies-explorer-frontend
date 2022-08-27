@@ -2,7 +2,12 @@ import React from 'react';
 import Modal from '../Modal/Modal';
 import Notification from '../Notification/Notification';
 
-function NotificationModal({ isOpen, onClose, notificationText }) {
+function NotificationModal({
+  isOpen,
+  onClose,
+  notificationText,
+}) {
+
   const STYLE_SETTINGS = {
     overlay: 'notification-modal',
     container: 'notification-modal__container',
@@ -14,13 +19,19 @@ function NotificationModal({ isOpen, onClose, notificationText }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} styleSettings={STYLE_SETTINGS}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      styleSettings={STYLE_SETTINGS}
+    >
       <Modal.Header />
       <Modal.Body>
-        <Notification text={notificationText} />
+        <Notification
+          text={notificationText}
+        />
       </Modal.Body>
     </Modal>
-  );
+  )
 }
 
 export default NotificationModal;

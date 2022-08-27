@@ -4,8 +4,9 @@
   align-items: center;
   padding: 18px 70px;
   box-sizing: border-box;
+  max-width: 1280px;
   margin: 0 auto;
-  background-color: #F3C1F8;
+  background: #f3c1f8;
 }
 
 @media screen and (max-width: 1023px) {
