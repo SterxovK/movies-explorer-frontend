@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { ReactComponent as AccountIcon } from '../../images/AccountLink/account-link-icon.svg'
 
-const MobileAccountNavList = React.memo((props) => {
+const MobileAccNavList = React.memo((props) => {
 
   const MOBILE_ACCOUNT_LINKS = [
     {
@@ -51,4 +51,4 @@ const MobileAccountNavList = React.memo((props) => {
   )
 });
 
-export default MobileAccountNavList;
+export default MobileAccNavList;

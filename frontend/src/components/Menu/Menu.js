@@ -1,7 +1,8 @@
 import React from 'react';
 import Modal from '../Modal/Modal';
 import MobileNavigation from '../MobileNavigation/MobileNavigation';
-import MobileAccountNavList from '../MobileAccountNavList/MobileAccountNavList';
+import MobileAccNavList from '../MobileAccNavList/MobileAccNavList';
+
 
 function Menu({
   isOpen,
@@ -31,7 +32,7 @@ function Menu({
         />
       </Modal.Body>
       <Modal.Footer>
-        <MobileAccountNavList
+        <MobileAccNavList
           onModalClose={onClose}
         />
       </Modal.Footer>
