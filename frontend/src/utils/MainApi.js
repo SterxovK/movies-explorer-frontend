@@ -87,7 +87,7 @@ class MainApi {
 };
 
 const OPTIONS = {
-  baseUrl: "http://localhost:3000",
+  baseUrl: "http://api.diploma.sterkhov.nomoredomains.xyz",
   headers: {
     "Content-Type": "application/json",
   },
