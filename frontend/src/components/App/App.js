@@ -30,7 +30,7 @@ import NotificationModal from "../NotificationModal/NotificationModal";
 
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
-  const [isLoadingData, setIsLoadingData] = React.useState(true);
+  const [isLoadingData, setIsLoadingData] = React.useState(false);
 
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
   const [notificationModalIsOpen, setNotificationModalIsOpen] =
