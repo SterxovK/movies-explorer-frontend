@@ -370,11 +370,11 @@ function App() {
             exact
             path="/"
           >
-            {isLoadingData ? (
+            {/* {isLoadingData ? (
               <Preloader />
-            ) : (
+            ) : ( */}
               <Main />
-            )}
+            {/* )} */}
 
           </Route>
           <ProtectedRoute
