@@ -227,10 +227,7 @@ function App() {
         .getMoviesData()
         .then((res) => {
           setMoviesApiResStatus(res.status);
-
           const moviesData = res.data;
-          localStorage.setItem("movies", JSON.stringify(moviesData));
-
           const localMoviesData = JSON.parse(localStorage.getItem("movies"));
           const renderedPrevMovies = JSON.parse(
             localStorage.getItem("filtered-previously-movies")
