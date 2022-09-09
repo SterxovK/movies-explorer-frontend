@@ -158,6 +158,7 @@ function App() {
   };
 
   const handleSearchMoviesData = (searchQueries = {}) => {
+    console.log(searchQueries);
     const localMoviesData = JSON.parse(localStorage.getItem("movies"));
     if (localMoviesData) {
       const filteredMovies = searchFilter(searchQueries, localMoviesData);
@@ -172,8 +173,10 @@ function App() {
         "filtered-previously-movies",
         JSON.stringify(markAsSaved(filteredMovies))
       );
+      localStorage.setItem("searchQueries", JSON.stringify(searchQueries));
 
       setMoviesData(markAsSaved(filteredMovies));
+      console.log(localStorage);
     }
   };
 
@@ -373,7 +376,7 @@ function App() {
         )}
         <Switch>
           <Route exact path="/">
-            <Main />
+            {isLoadingData ? <Preloader /> : <Main />}
           </Route>
           <ProtectedRoute
             path="/movies"
