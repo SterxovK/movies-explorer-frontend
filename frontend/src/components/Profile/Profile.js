@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 
-import CurrentUserContext from '../../contexts/CurrentUserContext';
+import CurrentUserContext from "../../contexts/CurrentUserContext";
 
-import ProfileForm from '../ProfileForm/ProfileForm';
+import ProfileForm from "../ProfileForm/ProfileForm";
 
-import useFormWithValidation from '../../hooks/useFormValidation';
+import useFormWithValidation from "../../hooks/useFormValidation";
 
-import UPDATE_PROFILE_ERRORS_TEXTS from '../../constants/update-profile-errors-texts';
+import UPDATE_PROFILE_ERRORS_TEXTS from "../../constants/update-profile-errors-texts";
 
 function Profile({
   onSignOut,
@@ -14,24 +14,19 @@ function Profile({
   isLoadingUpdateCurrentUser,
   updUserResStatus,
 }) {
-
   const currentUserData = React.useContext(CurrentUserContext);
 
-  const [isUpdateUserProfileError, setIsUpdateUserProfileError] = React.useState(false);
-  const [updateUserProfileErrorText, setUpdateUserProfileErrorText] = React.useState('');
+  const [isUpdateUserProfileError, setIsUpdateUserProfileError] =
+    React.useState(false);
+  const [updateUserProfileErrorText, setUpdateUserProfileErrorText] =
+    React.useState("");
   const [formIsValid, setFormIsValid] = React.useState(false);
 
-  const {
-    values,
-    errors,
-    isValid,
-    handleChange,
-    resetForm
-  } = useFormWithValidation({});
-
+  const { values, errors, isValid, handleChange, resetForm } =
+    useFormWithValidation({});
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    onUpdateCurrentUser(values)
+    onUpdateCurrentUser(values);
     handleToggleEditableProfile();
     resetForm(currentUserData);
   };
@@ -41,12 +36,12 @@ function Profile({
   const handleToggleEditableProfile = () => {
     setIsEdited(!isEdited);
     setIsUpdateUserProfileError(false);
-    setUpdateUserProfileErrorText('');
+    setUpdateUserProfileErrorText("");
   };
 
   const SUBMIT_BUTTON_SETTINGS = {
-    type: 'submit',
-    title: 'Сохранить',
+    type: "submit",
+    title: "Сохранить",
   };
 
   const INPUTS_DATA = [
@@ -55,7 +50,7 @@ function Profile({
       type: "text",
       id: "name",
       label: "Имя",
-      placeholder: `${currentUserData.data.name}`,
+      placeholder: "Имя",
       name: "name",
       required: true,
       regexp: "[a-zA-Z -]{2,30}",
@@ -67,47 +62,45 @@ function Profile({
       type: "email",
       id: "email",
       label: "Почта",
-      placeholder: `${currentUserData.data.email}`,
+      placeholder: "Почта",
       name: "email",
       required: true,
     },
   ];
 
-  const TITLE_TEXT = `Привет, ${currentUserData.data.name || ""}!`;
- // console.log(currentUserData.data.name);
+  const TITLE_TEXT = `Привет, ${currentUserData.name || ""}!`;
+  // console.log(currentUserData.data.name);
 
   const PROFILE_STYLE_SETTINGS = {
-    main: 'profile',
+    main: "profile",
   };
 
   const PROFILE_EDIT_BUTTON_SETTINGS = {
-    title: 'Редактировать',
+    title: "Редактировать",
   };
 
   const PROFILE_SIGNOUT_BUTTON_SETTINGS = {
-    title: 'Выйти из аккаунта',
+    title: "Выйти из аккаунта",
   };
 
   React.useEffect(() => {
     if (currentUserData) {
       resetForm(currentUserData);
     }
-  }, [currentUserData, resetForm])
+  }, [currentUserData, resetForm]);
 
   React.useEffect(() => {
     setFormIsValid(isValid);
-  }, [isValid, values])
+  }, [isValid, values]);
 
   React.useEffect(() => {
-
     if (
-      currentUserData.data.name === values.name &&
-      currentUserData.data.email === values.email
+      currentUserData.name === values.name &&
+      currentUserData.email === values.email
     ) {
       setFormIsValid(false);
     }
-  }, [currentUserData, values])
-
+  }, [currentUserData, values]);
 
   const errorHandler = () => {
     if (updUserResStatus) {
@@ -115,22 +108,26 @@ function Profile({
         case 400:
         case 404:
           setIsUpdateUserProfileError(true);
-          setUpdateUserProfileErrorText(UPDATE_PROFILE_ERRORS_TEXTS.BAD_REQUEST);
+          setUpdateUserProfileErrorText(
+            UPDATE_PROFILE_ERRORS_TEXTS.BAD_REQUEST
+          );
           break;
         case 500:
           setIsUpdateUserProfileError(true);
-          setUpdateUserProfileErrorText(UPDATE_PROFILE_ERRORS_TEXTS.INTERNAL_SERVER_ERROR)
+          setUpdateUserProfileErrorText(
+            UPDATE_PROFILE_ERRORS_TEXTS.INTERNAL_SERVER_ERROR
+          );
           break;
         case 200:
           setIsUpdateUserProfileError(false);
-          setUpdateUserProfileErrorText('');
+          setUpdateUserProfileErrorText("");
           break;
         default:
           setIsUpdateUserProfileError(true);
           setUpdateUserProfileErrorText(UPDATE_PROFILE_ERRORS_TEXTS.BASE_ERROR);
           break;
-      };
-    };
+      }
+    }
   };
 
   React.useEffect(() => {
@@ -138,9 +135,7 @@ function Profile({
   });
 
   return (
-    <main
-      className={PROFILE_STYLE_SETTINGS.main}
-    >
+    <main className={PROFILE_STYLE_SETTINGS.main}>
       <ProfileForm
         titleText={TITLE_TEXT}
         inputsData={INPUTS_DATA}
@@ -160,7 +155,7 @@ function Profile({
         isLoadingData={isLoadingUpdateCurrentUser}
       />
     </main>
-  )
+  );
 }
 
 export default Profile;

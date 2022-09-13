@@ -37,7 +37,7 @@ function AboutMe() {
         {
           id: 1,
           src: AboutMePortrait,
-          alt: "портрет студента Алексея",
+          alt: "портрет студента",
         },
       ],
     },

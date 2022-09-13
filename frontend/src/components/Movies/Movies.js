@@ -32,6 +32,7 @@ function Movies({
     onSubmit(data);
   }
 
+
   const handleErrors = () => {
     if (resStatus) {
       switch (resStatus) {
@@ -48,6 +49,7 @@ function Movies({
   React.useEffect(() => {
     handleErrors();
   }, [resStatus])
+
 
   return (
     <main>

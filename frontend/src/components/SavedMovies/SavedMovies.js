@@ -21,7 +21,7 @@ function SavedMovies({
   getSavedMoviesResStatus,
   isNoSavedMoviesFound,
 }) {
-
+console.log(savedMovies)
   const [isMoviesApiError, setIsMoviesApiError] = React.useState(false);
 
   const handleSubmit = (data) => {

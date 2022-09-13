@@ -97,4 +97,4 @@ const mainApi = new MainApi(OPTIONS);
 
 export default mainApi;
 
-// localhost:3000 api.diploma.sterkhov.nomoredomains.xyz
+// localhost:3000 "https://api.diploma.sterkhov.nomoredomains.xyz"

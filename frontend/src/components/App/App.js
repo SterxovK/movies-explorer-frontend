@@ -159,6 +159,7 @@ function App() {
 
   const handleSearchMoviesData = (searchQueries = {}) => {
     console.log(searchQueries);
+    setIsLoadingMoviesData(true);
     const localMoviesData = JSON.parse(localStorage.getItem("movies"));
     if (localMoviesData) {
       const filteredMovies = searchFilter(searchQueries, localMoviesData);
@@ -177,6 +178,7 @@ function App() {
 
       setMoviesData(markAsSaved(filteredMovies));
       console.log(localStorage);
+      setIsLoadingMoviesData(false);
     }
   };
 
@@ -191,9 +193,11 @@ function App() {
         .getSavedMovies(token)
         .then((res) => {
           setGetSavedMoviesResStatus(res.status);
+          console.log(res.data);
 
           if (res.data.length === 0) {
             setIsSavedMoviesEmpty(true);
+
             setFoundSavedMoviesData(res.data);
             return;
           } else {
@@ -201,6 +205,7 @@ function App() {
           }
 
           const savedMoviesData = res.data.reverse();
+
           const filteredSavedMovies = searchFilter(
             searchQueries,
             savedMoviesData
@@ -223,7 +228,7 @@ function App() {
   React.useEffect(() => {
     checkToken();
     const token = localStorage.getItem("jwt");
-    console.log(token);
+
     if (token) {
       setIsLoadingMoviesData(true);
       moviesApi
@@ -305,10 +310,10 @@ function App() {
     }
   };
 
-  const markAsUnsaved = (id) => {
+  const markAsUnsaved = (_id) => {
     moviesData.forEach((movie) => {
       if (movie.saved) {
-        if (movie._id === id) {
+        if (movie._id === _id) {
           delete movie.saved;
           delete movie._id;
         }
@@ -320,6 +325,8 @@ function App() {
     const token = localStorage.getItem("jwt");
 
     if (token) {
+      console.log(token);
+      console.log(id);
       mainApi
         .deleteSavedMovie(id, token)
         .then((res) => {
@@ -378,6 +385,27 @@ function App() {
           <Route exact path="/">
             {isLoadingData ? <Preloader /> : <Main />}
           </Route>
+
+          <Route path="/signup">
+            <Register
+              onSignup={handleSignup}
+              regResStatus={registrationResStatus}
+              authResStatus={authResStatus}
+              isLoadingSignup={
+                isLoadingSignup || isLoadingData || isLoadingSignin
+              }
+            />
+          </Route>
+          <Route path="/signin">
+            <Login
+              onSignin={handleSignin}
+              authResStatus={authResStatus}
+              tokenResStatus={tokenAuthResStatus}
+              isLoadingSignin={
+                isLoadingSignup || isLoadingData || isLoadingSignin
+              }
+            />
+          </Route>
           <ProtectedRoute
             path="/movies"
             redirectTo="/"
@@ -414,26 +442,7 @@ function App() {
             updUserResStatus={updateCurrentUserResStatus}
             component={Profile}
           />
-          <Route path="/signup">
-            <Register
-              onSignup={handleSignup}
-              regResStatus={registrationResStatus}
-              authResStatus={authResStatus}
-              isLoadingSignup={
-                isLoadingSignup || isLoadingData || isLoadingSignin
-              }
-            />
-          </Route>
-          <Route path="/signin">
-            <Login
-              onSignin={handleSignin}
-              authResStatus={authResStatus}
-              tokenResStatus={tokenAuthResStatus}
-              isLoadingSignin={
-                isLoadingSignup || isLoadingData || isLoadingSignin
-              }
-            />
-          </Route>
+
           <Route path="*">
             <NotFound />
           </Route>

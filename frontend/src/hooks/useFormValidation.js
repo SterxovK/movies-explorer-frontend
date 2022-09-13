@@ -16,6 +16,7 @@ export default function useFormWithValidation() {
       [name]: value
     });
 
+
     setErrors({
       ...errors,
       [name]: target.validationMessage

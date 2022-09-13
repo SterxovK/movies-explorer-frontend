@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 function InputField(props) {
   return (
     <input
@@ -13,10 +14,10 @@ function InputField(props) {
       minLength={props.settings.minLength}
       maxLength={props.settings.maxLength}
       onChange={props.onChange}
-      value={props.value || ''}
+      value={props.value || ""}
       pattern={props.settings.regexp}
     />
-  )
+  );
 }
 
 export default InputField;

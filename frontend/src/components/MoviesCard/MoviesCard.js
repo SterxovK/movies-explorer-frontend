@@ -66,7 +66,7 @@ function MoviesCard({
         <a
           href={movieData.trailer}
           target="_blank"
-          aria-label={`Открыть трейлер фильма "${movieData.nameRU}" на youtube.com`}
+          aria-label={`Открыть трейлер фильма "${movieData.nameRU}" на youtube.com`} rel="noreferrer"
         >
           <img
             className={MOVIES_CARD_STYLE_SETTINGS.image}
