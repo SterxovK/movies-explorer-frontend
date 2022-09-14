@@ -23,15 +23,13 @@ function Movies({
   onDeleteSavedMovie,
   isNoMoviesFound,
 }) {
-
   let location = useLocation();
 
   const [isMoviesApiError, setIsMoviesApiError] = React.useState(false);
 
   const handleSubmit = (data) => {
     onSubmit(data);
-  }
-
+  };
 
   const handleErrors = () => {
     if (resStatus) {
@@ -42,14 +40,13 @@ function Movies({
         default:
           setIsMoviesApiError(true);
           break;
-      };
-    };
+      }
+    }
   };
 
   React.useEffect(() => {
     handleErrors();
-  }, [resStatus])
-
+  }, [resStatus]);
 
   return (
     <main>
@@ -57,17 +54,11 @@ function Movies({
         onSubmit={handleSubmit}
       />
       {!isLoadingData && isNoMoviesFound && (
-        <Notification
-          text={NO_MOVIES_FOUND_TEXT.BASE_TEXT}
-        />
+        <Notification text={NO_MOVIES_FOUND_TEXT.BASE_TEXT} />
       )}
-      {isLoadingData && (
-        <Preloader />
-      )}
+      {isLoadingData && <Preloader />}
       {isMoviesApiError && (
-        <Notification
-          text={MOVIES_ERRORS_TEXTS.BASE_ERROR}
-        />
+        <Notification text={MOVIES_ERRORS_TEXTS.BASE_ERROR} />
       )}
       <MoviesCardList
         data={moviesData}
@@ -76,7 +67,7 @@ function Movies({
         onDeleteSavedMovie={onDeleteSavedMovie}
       />
     </main>
-  )
+  );
 }
 
 export default Movies;

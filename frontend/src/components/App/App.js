@@ -157,6 +157,7 @@ function App() {
     }
   };
 
+
   const handleSearchMoviesData = (searchQueries = {}) => {
     console.log(searchQueries);
     setIsLoadingMoviesData(true);
@@ -178,7 +179,10 @@ function App() {
 
       setMoviesData(markAsSaved(filteredMovies));
       console.log(localStorage);
-      setIsLoadingMoviesData(false);
+      setTimeout(() => {
+        setIsLoadingMoviesData(false);
+      },500)
+
     }
   };
 
@@ -344,6 +348,8 @@ function App() {
     }
   };
 
+
+
   const setOpenMenu = () => {
     setMenuIsOpen(true);
   };
@@ -418,6 +424,7 @@ function App() {
             moviesData={markAsSaved(moviesData)}
             onSaveMovie={handleSaveFavoriteMovie}
             onDeleteSavedMovie={handleDeleteSavedMovie}
+
           />
           <ProtectedRoute
             path="/saved-movies"

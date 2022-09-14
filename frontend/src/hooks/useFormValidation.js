@@ -1,7 +1,11 @@
 import { useState, useCallback } from "react";
 
-export default function useFormWithValidation() {
+function validateEmail(email) {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
 
+export default function useFormWithValidation() {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
@@ -9,22 +13,32 @@ export default function useFormWithValidation() {
   const handleChange = (evt) => {
     const target = evt.target;
     const name = target.name;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
 
     setValues({
       ...values,
-      [name]: value
+      [name]: value,
     });
-
 
     setErrors({
       ...errors,
-      [name]: target.validationMessage
+      [name]: target.validationMessage,
     });
 
-    setIsValid(target.closest('form').checkValidity());
-  }
+    let valid = target.closest("form").checkValidity();
 
+    if (name === "email") {
+      valid = validateEmail(value);
+      if (!valid) {
+        setErrors({
+          ...errors,
+          email: "check email",
+        });
+      }
+    }
+
+    setIsValid(valid);
+  };
   const resetForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {
       setValues(newValues);
@@ -32,7 +46,7 @@ export default function useFormWithValidation() {
       setIsValid(newIsValid);
     },
     [setValues, setErrors, setIsValid]
-  )
+  );
 
   return {
     values,
@@ -41,4 +55,4 @@ export default function useFormWithValidation() {
     handleChange,
     resetForm,
   };
-};
+}

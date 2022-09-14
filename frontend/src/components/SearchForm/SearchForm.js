@@ -26,6 +26,7 @@ function SearchForm({
     resetForm();
   };
 
+
   const SEARCH_FORM_STYLE_SETTINGS = {
     form: 'search-form',
     icon: 'search-form__icon',
@@ -62,13 +63,8 @@ function SearchForm({
   };
 
   return (
-    <form
-      className={SEARCH_FORM_STYLE_SETTINGS.form}
-      onSubmit={handleSubmit}
-    >
-      <SearchFormIcon
-        className={SEARCH_FORM_STYLE_SETTINGS.icon}
-      />
+    <form className={SEARCH_FORM_STYLE_SETTINGS.form} onSubmit={handleSubmit}>
+      <SearchFormIcon className={SEARCH_FORM_STYLE_SETTINGS.icon} />
       <InputField
         settings={SEARCH_TEXT_INPUT_SETTINGS}
         className={SEARCH_FORM_STYLE_SETTINGS.textInput}
@@ -89,7 +85,7 @@ function SearchForm({
         settings={SUBMIT_BUTTON_SETTINGS}
       />
     </form>
-  )
+  );
 }
 
 export default SearchForm;
