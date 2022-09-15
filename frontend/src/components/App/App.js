@@ -134,6 +134,8 @@ function App() {
         .catch((err) => {
           setTokenAuthResStatus(err);
         });
+    } else {
+      setIsLoginDataLoading(true);
     }
   };
 
@@ -388,7 +390,7 @@ function App() {
       <div className="app">
 
         {useRouteMatch(exclusionRoutesPathsAuthArray) ? null : (
-          isLoginDataLoading && <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
+           isLoginDataLoading &&<Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
         )}
 
         <Switch>
