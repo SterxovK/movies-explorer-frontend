@@ -386,9 +386,11 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUserData}>
       <div className="app">
+
         {useRouteMatch(exclusionRoutesPathsAuthArray) ? null : (
-          <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
+          isLoginDataLoading && <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
         )}
+
         <Switch>
           <Route exact path="/">
             {isLoadingData ? <Preloader /> : <Main />}

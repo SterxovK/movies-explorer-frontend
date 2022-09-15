@@ -1,65 +1,67 @@
 import React from "react";
 
-import InputField from '../InputField/InputField';
+import InputField from "../InputField/InputField";
 
-import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
+import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 
 import SubmitButton from "../SubmitButton/SubmitButton";
 
-import { ReactComponent as SearchFormIcon } from '../../images/SearchForm/search-form-icon.svg';
+import { ReactComponent as SearchFormIcon } from "../../images/SearchForm/search-form-icon.svg";
 
-import useFormWithValidation from '../../hooks/useFormValidation';
+import useFormWithValidation from "../../hooks/useFormValidation";
 
-function SearchForm({
-  onSubmit,
-}) {
+function SearchForm({ onSubmit }) {
+  const { values, handleChange, resetForm } = useFormWithValidation({});
 
-  const {
-    values,
-    handleChange,
-    resetForm
-  } = useFormWithValidation({});
+  const handleCheckBoxChange = (evt) => {
+    handleChange(evt);
+    values.shortfilm = evt.target.checked;
+    sendInputData();
+  };
+
+  const sendInputData = () => {
+    onSubmit(values);
+  };
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    onSubmit(values);
+    sendInputData();
     resetForm();
   };
 
-
   const SEARCH_FORM_STYLE_SETTINGS = {
-    form: 'search-form',
-    icon: 'search-form__icon',
-    textInput: 'search-form__text-input',
-    submitButton: 'search-form__submit-button',
-    checkboxInput: 'search-form__checkbox-input',
-    checkboxLabel: 'search-form__checkbox-label',
-    checkboxSlider: 'search-form__checkbox-slider',
-    checkboxOnFocus: 'search-form__checkbox-label_focus'
+    form: "search-form",
+    icon: "search-form__icon",
+    textInput: "search-form__text-input",
+    submitButton: "search-form__submit-button",
+    checkboxInput: "search-form__checkbox-input",
+    checkboxLabel: "search-form__checkbox-label",
+    checkboxSlider: "search-form__checkbox-slider",
+    checkboxOnFocus: "search-form__checkbox-label_focus",
   };
 
   const SEARCH_TEXT_INPUT_SETTINGS = {
-    type: 'text',
-    id: 'search-text',
-    ariaLabel: 'поиск фильма',
-    placeholder: 'Фильм',
-    name: 'search',
+    type: "text",
+    id: "search-text",
+    ariaLabel: "поиск фильма",
+    placeholder: "Фильм",
+    name: "search",
     maxLength: 30,
     required: false,
   };
 
   const SHORTFILM_FILTER_CHECKBOX_INPUT_SETTINGS = {
-    type: 'checkbox',
-    id: 'filter-shortfilm',
-    label: 'Короткометражки',
-    name: 'shortfilm',
+    type: "checkbox",
+    id: "filter-shortfilm",
+    label: "Короткометражки",
+    name: "shortfilm",
     required: false,
   };
 
   const SUBMIT_BUTTON_SETTINGS = {
-    className: '',
-    type: 'submit',
-    title: 'Найти',
+    className: "",
+    type: "submit",
+    title: "Найти",
   };
 
   return (
@@ -77,7 +79,7 @@ function SearchForm({
         sliderClassName={SEARCH_FORM_STYLE_SETTINGS.checkboxSlider}
         onFocusClassName={SEARCH_FORM_STYLE_SETTINGS.checkboxOnFocus}
         settings={SHORTFILM_FILTER_CHECKBOX_INPUT_SETTINGS}
-        onChange={handleChange}
+        onChange={handleCheckBoxChange}
         value={values.shortfilm}
       />
       <SubmitButton
