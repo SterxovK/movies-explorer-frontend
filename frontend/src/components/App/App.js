@@ -29,6 +29,7 @@ import Menu from "../Menu/Menu";
 import NotificationModal from "../NotificationModal/NotificationModal";
 
 function App() {
+  const [isLoginDataLoading, setIsLoginDataLoading] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [isLoadingData, setIsLoadingData] = React.useState(false);
 
@@ -128,6 +129,7 @@ function App() {
           setTokenAuthResStatus(res.status);
           setCurrentUserData(res.data);
           setLoggedIn(true);
+          setIsLoginDataLoading(true);
         })
         .catch((err) => {
           setTokenAuthResStatus(err);
@@ -391,7 +393,6 @@ function App() {
           <Route exact path="/">
             {isLoadingData ? <Preloader /> : <Main />}
           </Route>
-
           <Route path="/signup">
             <Register
               onSignup={handleSignup}
@@ -412,46 +413,51 @@ function App() {
               }
             />
           </Route>
-          <ProtectedRoute
-            path="/movies"
-            redirectTo="/"
-            loggedIn={loggedIn}
-            component={Movies}
-            isNoMoviesFound={isNoMoviesFound}
-            isLoadingData={isLoadingMoviesData}
-            resStatus={moviesApiResStatus}
-            onSubmit={handleSearchMoviesData}
-            moviesData={markAsSaved(moviesData)}
-            onSaveMovie={handleSaveFavoriteMovie}
-            onDeleteSavedMovie={handleDeleteSavedMovie}
-
-          />
-          <ProtectedRoute
-            path="/saved-movies"
-            redirectTo="/"
-            loggedIn={loggedIn}
-            isSavedMoviesEmpty={isSavedMoviesEmpty}
-            component={SavedMovies}
-            isLoadingData={isLoadingMoviesData}
-            isNoSavedMoviesFound={isNoSavedMoviesFound}
-            savedMovies={foundSavedMoviesData}
-            handleSearchSavedMoviesData={handleSearchSavedMoviesData}
-            onDeleteSavedMovie={handleDeleteSavedMovie}
-            getSavedMoviesResStatus={getSavedMoviesResStatus}
-          />
-          <ProtectedRoute
-            path="/profile"
-            redirectTo="/"
-            loggedIn={loggedIn}
-            onSignOut={handleSignOut}
-            onUpdateCurrentUser={handleUpdateCurrenUser}
-            isLoadingUpdateCurrentUser={isLoadingUpdateCurrentUser}
-            updUserResStatus={updateCurrentUserResStatus}
-            component={Profile}
-          />
-
+          {isLoginDataLoading && (
+            <ProtectedRoute
+              path="/movies"
+              redirectTo="/"
+              loggedIn={loggedIn}
+              component={Movies}
+              isNoMoviesFound={isNoMoviesFound}
+              isLoadingData={isLoadingMoviesData}
+              resStatus={moviesApiResStatus}
+              onSubmit={handleSearchMoviesData}
+              moviesData={markAsSaved(moviesData)}
+              onSaveMovie={handleSaveFavoriteMovie}
+              onDeleteSavedMovie={handleDeleteSavedMovie}
+            />
+          )}
+          {isLoginDataLoading && (
+            <ProtectedRoute
+              path="/saved-movies"
+              redirectTo="/"
+              loggedIn={loggedIn}
+              isSavedMoviesEmpty={isSavedMoviesEmpty}
+              component={SavedMovies}
+              isLoadingData={isLoadingMoviesData}
+              isNoSavedMoviesFound={isNoSavedMoviesFound}
+              savedMovies={foundSavedMoviesData}
+              handleSearchSavedMoviesData={handleSearchSavedMoviesData}
+              onDeleteSavedMovie={handleDeleteSavedMovie}
+              getSavedMoviesResStatus={getSavedMoviesResStatus}
+            />
+          )}
+          {isLoginDataLoading && (
+            <ProtectedRoute
+              path="/profile"
+              redirectTo="/"
+              loggedIn={loggedIn}
+              onSignOut={handleSignOut}
+              onUpdateCurrentUser={handleUpdateCurrenUser}
+              isLoadingUpdateCurrentUser={isLoadingUpdateCurrentUser}
+              updUserResStatus={updateCurrentUserResStatus}
+              component={Profile}
+            />
+          )}
           <Route path="*">
-            <NotFound />
+            {!isLoginDataLoading && <Preloader />}
+            {isLoginDataLoading && <NotFound />}
           </Route>
         </Switch>
         {useRouteMatch(exclusionRoutesPathsArrayFooter) ? null : <Footer />}
