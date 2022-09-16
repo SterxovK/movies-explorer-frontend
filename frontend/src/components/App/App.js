@@ -390,7 +390,7 @@ function App() {
       <div className="app">
 
         {useRouteMatch(exclusionRoutesPathsAuthArray) ? null : (
-           isLoginDataLoading &&<Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
+           <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
         )}
 
         <Switch>
