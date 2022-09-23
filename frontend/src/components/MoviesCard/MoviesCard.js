@@ -89,7 +89,7 @@ function MoviesCard({
           onClick={handleClickFavoriteButton}
           locationPathname={locationPathname}
           isSaved={data.saved}
-        />
+        />{console.log(data)}
       </MainArticle.Header>
     </MainArticle>
   );

@@ -25,22 +25,17 @@ function FavoritesButton({
   }, [isSaved, locationPathname])
 
   return (
-    <button
-      className={className}
-      aria-label={buttonLabel}
-      onClick={onClick}
-    >
-      {locationPathname === '/saved-movies' ? (
+    <button className={className} aria-label={buttonLabel} onClick={onClick}>
+      {console.log(locationPathname, isSaved)}
+      {locationPathname === "/saved-movies" ? (
         <RemoveFavoritesButtonIcon />
-      )
-      :
-      locationPathname === '/movies' && isSaved ? (
+      ) : locationPathname === "/movies" && isSaved ? (
         <AddFavoritesButtonIconMarked />
       ) : (
         <AddFavoritesButtonIcon />
       )}
     </button>
-  )
+  );
 }
 
 export default FavoritesButton;

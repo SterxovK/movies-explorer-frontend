@@ -1,4 +1,4 @@
-class MoviesApi {
+ class MoviesApi {
   constructor (options) {
     this._url = options.baseUrl;
     this._headers = options.headers;
@@ -21,11 +21,4 @@ class MoviesApi {
   };
 };
 
-const moviesApi = new MoviesApi({
-  baseUrl: 'https://api.nomoreparties.co/beatfilm-movies',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export default moviesApi;
+export default MoviesApi;

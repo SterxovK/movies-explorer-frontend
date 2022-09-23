@@ -11,7 +11,7 @@ function MoviesCardList({
   onSaveMovie,
   onDeleteSavedMovie,
 }) {
-
+console.log(3456, data)
   const SIZE_WIDTH_LARGE = 1024;
   const SIZE_WIDTH_MEDIUM = 768;
   const SIZE_WIDTH_SMALL = 320;

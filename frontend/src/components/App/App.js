@@ -27,6 +27,7 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Preloader from "../Preloader/Preloader";
 import Menu from "../Menu/Menu";
 import NotificationModal from "../NotificationModal/NotificationModal";
+import Storage from "../../utils/storage";
 
 function App() {
   const [isLoginDataLoading, setIsLoginDataLoading] = React.useState(false);
@@ -91,17 +92,17 @@ function App() {
     setIsLoadingSignin(true);
     mainApi
       .authorize(data)
-      .then((res) => {
-        setAuthResStatus(res.status);
-        localStorage.setItem("jwt", res.data.token);
+      .then((status) => {
+        setAuthResStatus(status);
+        // localStorage.setItem("jwt", res.data.token);
         setLoggedIn(true);
         history.push("/movies");
         setOpenNotificationModal();
         setNotificationText(AUTH_SUCCESS_TEXTS.BASE_TEXT);
       })
-      .then(() => {
-        checkToken();
-      })
+      // .then(() => {
+      //   checkToken();
+      // })
       .catch((err) => {
         setAuthResStatus(err);
       })
@@ -127,12 +128,15 @@ function App() {
         .checkToken(token)
         .then((res) => {
           setTokenAuthResStatus(res.status);
+
           setCurrentUserData(res.data);
           setLoggedIn(true);
           setIsLoginDataLoading(true);
+
         })
         .catch((err) => {
           setTokenAuthResStatus(err);
+
         });
     } else {
       setIsLoginDataLoading(true);
@@ -161,7 +165,6 @@ function App() {
     }
   };
 
-
   const handleSearchMoviesData = (searchQueries = {}) => {
     console.log(searchQueries);
     setIsLoadingMoviesData(true);
@@ -182,95 +185,107 @@ function App() {
       localStorage.setItem("searchQueries", JSON.stringify(searchQueries));
 
       setMoviesData(markAsSaved(filteredMovies));
-      console.log(localStorage);
+
       setTimeout(() => {
         setIsLoadingMoviesData(false);
-      },500)
-
+      }, 500);
     }
   };
+
+  const storage = new Storage();
 
   const handleSearchSavedMoviesData = (
     searchQueries = {},
     isAfterDelete = false
   ) => {
-    const token = localStorage.getItem("jwt");
+    storage.getSavedMovies().then((movies) => {
+      //setGetSavedMoviesResStatus(res.status);
+console.log(movies, 3434);
+      if (movies.length === 0) {
+        setIsSavedMoviesEmpty(true);
+console.log(movies, 989898)
+        setFoundSavedMoviesData(movies);
+        return;
+      } else {
+        setIsSavedMoviesEmpty(false);
+      }
+    });
 
-    if (token) {
-      mainApi
-        .getSavedMovies(token)
-        .then((res) => {
-          setGetSavedMoviesResStatus(res.status);
-          console.log(res.data);
+    //         const savedMoviesData = res.data.reverse();
 
-          if (res.data.length === 0) {
-            setIsSavedMoviesEmpty(true);
+    //         const filteredSavedMovies = searchFilter(
+    //           searchQueries,
+    //           savedMoviesData
+    //         );
 
-            setFoundSavedMoviesData(res.data);
-            return;
-          } else {
-            setIsSavedMoviesEmpty(false);
-          }
-
-          const savedMoviesData = res.data.reverse();
-
-          const filteredSavedMovies = searchFilter(
-            searchQueries,
-            savedMoviesData
-          );
-
-          if (filteredSavedMovies.length === 0) {
-            setIsNoSavedMoviesFound(true);
-          } else {
-            setIsNoSavedMoviesFound(false);
-          }
-          setFoundSavedMoviesData(filteredSavedMovies);
-        })
-        .catch((err) => {
-          console.log(err);
-          setMoviesApiResStatus(err);
-        });
-    }
+    //         if (filteredSavedMovies.length === 0) {
+    //           setIsNoSavedMoviesFound(true);
+    //         } else {
+    //           setIsNoSavedMoviesFound(false);
+    //         }
+    //         setFoundSavedMoviesData(filteredSavedMovies);
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //         setMoviesApiResStatus(err);
+    //       });
+    //   }
   };
 
   React.useEffect(() => {
     checkToken();
-    const token = localStorage.getItem("jwt");
+    setIsLoadingMoviesData(true);
+    storage
+      .getMovies()
+      .then((movies) => {
+        setMoviesData(movies);
+      })
+      .catch((err) => {
+        console.log(err);
+        setMoviesApiResStatus(err);
+      })
+      .finally(() => {
+        setIsLoadingMoviesData(false);
+      });
 
-    if (token) {
-      setIsLoadingMoviesData(true);
-      moviesApi
-        .getMoviesData()
-        .then((res) => {
-          setMoviesApiResStatus(res.status);
-          const moviesData = res.data;
-          const localMoviesData = JSON.parse(localStorage.getItem("movies"));
-          const renderedPrevMovies = JSON.parse(
-            localStorage.getItem("filtered-previously-movies")
-          );
-          if (renderedPrevMovies) {
-            setMoviesData(markAsSaved(renderedPrevMovies));
-          } else {
-            if (localMoviesData) {
-              setMoviesData(markAsSaved(localMoviesData));
-            } else {
-              localStorage.setItem("movies", JSON.stringify(moviesData));
-            }
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setMoviesApiResStatus(err);
-        })
-        .finally(() => {
-          setIsLoadingMoviesData(false);
-        });
-    }
+    // const token = localStorage.getItem("jwt");
+    // if (token) {
+    //   console.log(1111);
+    //   const localMoviesData = JSON.parse(localStorage.getItem("movies"));
+    //   const renderedPrevMovies = JSON.parse(
+    //     localStorage.getItem("filtered-previously-movies")
+    //   );
+    //   if (renderedPrevMovies) {
+    //     setMoviesData(markAsSaved(renderedPrevMovies));
+    //     console.log(555);
+    //     console.log(foundSavedMoviesData);
+    //   } else {
+    //     if (localMoviesData) {
+    //       setMoviesData(markAsSaved(localMoviesData));
+    //       console.log(666);
+    //     } else {
+    //       moviesApi
+    //         .getMoviesData()
+    //         .then((res) => {
+    //           setMoviesApiResStatus(res.status);
+    //           const moviesData = res.data;
+    //           localStorage.setItem("movies", JSON.stringify(moviesData));
+    //         })
+    //         .catch((err) => {
+    //           console.log(err);
+    //           setMoviesApiResStatus(err);
+    //         });
+    // .finally(() => {
+    //   setIsLoadingMoviesData(false);
+    // });
+    //     }
+    //   }
+    //   setIsLoadingMoviesData(false);
+    // }
   }, [loggedIn]);
 
   const getInitialSavedMoviesIds = () => {
     const initialSavedMoviesIds = [];
-
     foundSavedMoviesData.forEach((savedMovie) => {
       initialSavedMoviesIds.push(savedMovie.movieId);
     });
@@ -280,6 +295,7 @@ function App() {
 
   const markAsSaved = (foundMoviesArr) => {
     const initialSavedMoviesIdsArr = getInitialSavedMoviesIds();
+    console.log(initialSavedMoviesIdsArr);
     foundMoviesArr.forEach((foundMovie) => {
       foundMovie.saved = initialSavedMoviesIdsArr.some(
         (savedMovieId) => savedMovieId === foundMovie.id
@@ -297,25 +313,38 @@ function App() {
   };
 
   const handleSaveFavoriteMovie = (data) => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      mainApi
-        .saveMovie(data, token)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          setOpenNotificationModal();
-          setNotificationText(`${SAVE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`);
-          console.log(err);
-        })
-        .finally(() => {
-          handleSearchSavedMoviesData();
-          console.log("yes");
-        });
-    } else {
-      history.push("/signin");
-    }
+    console.log(storage, 222);
+    storage
+      .saveMovie(data)
+      .catch((err) => {
+        setOpenNotificationModal();
+        setNotificationText(`${SAVE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`);
+        console.log(err);
+      })
+      .finally(() => {
+        handleSearchSavedMoviesData();
+        console.log("yes");
+      });
+
+    // const token = localStorage.getItem("jwt");
+    // if (token) {
+    //   mainApi
+    //     .saveMovie(data, token)
+    //     .then((res) => {
+    //       console.log(res);
+    //     })
+    //     .catch((err) => {
+    //       setOpenNotificationModal();
+    //       setNotificationText(`${SAVE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`);
+    //       console.log(err);
+    //     })
+    //     .finally(() => {
+    //       handleSearchSavedMoviesData();
+    //       console.log("yes");
+    //     });
+    // } else {
+    //   history.push("/signin");
+    // }
   };
 
   const markAsUnsaved = (_id) => {
@@ -330,29 +359,36 @@ function App() {
   };
 
   const handleDeleteSavedMovie = (id) => {
-    const token = localStorage.getItem("jwt");
+    storage
+      .deleteSavedMovie(id)
+      .catch((err) => {
+        setOpenNotificationModal();
+        setNotificationText(`${DELETE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`);
+        console.log(err);
+      })
+      .finally(() => {
+        const isAfterDelete = true;
+        handleSearchSavedMoviesData(isAfterDelete);
+      });
 
-    if (token) {
-      console.log(token);
-      console.log(id);
-      mainApi
-        .deleteSavedMovie(id, token)
-        .then((res) => {
-          markAsUnsaved(id);
-        })
-        .catch((err) => {
-          setOpenNotificationModal();
-          setNotificationText(`${DELETE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`);
-          console.log(err);
-        })
-        .finally(() => {
-          const isAfterDelete = true;
-          handleSearchSavedMoviesData(isAfterDelete);
-        });
-    }
+    // const token = localStorage.getItem("jwt");
+    // if (token) {
+    //   mainApi
+    //     .deleteSavedMovie(id, token)
+    //     .then((res) => {
+    //       markAsUnsaved(id);
+    //     })
+    //     .catch((err) => {
+    //       setOpenNotificationModal();
+    //       setNotificationText(`${DELETE_MOVIE_ERROR_TEXTS.BASE_TEXT} ${err}`);
+    //       console.log(err);
+    //     })
+    //     .finally(() => {
+    //       const isAfterDelete = true;
+    //       handleSearchSavedMoviesData(isAfterDelete);
+    //     });
+    // }
   };
-
-
 
   const setOpenMenu = () => {
     setMenuIsOpen(true);
@@ -388,9 +424,8 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUserData}>
       <div className="app">
-
         {useRouteMatch(exclusionRoutesPathsAuthArray) ? null : (
-           <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
+          <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
         )}
 
         <Switch>
@@ -427,7 +462,7 @@ function App() {
               isLoadingData={isLoadingMoviesData}
               resStatus={moviesApiResStatus}
               onSubmit={handleSearchMoviesData}
-              moviesData={markAsSaved(moviesData)}
+              moviesData={moviesData}
               onSaveMovie={handleSaveFavoriteMovie}
               onDeleteSavedMovie={handleDeleteSavedMovie}
             />
