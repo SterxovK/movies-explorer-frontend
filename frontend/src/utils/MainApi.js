@@ -22,9 +22,11 @@ class MainApi {
     })
       .then(this._handleOriginalResponse)
       .then((res) => {
-        localStorage.setItem("jwt", res.data.token);
-        this._token = res.data.token;
-        return Promise.resolve(res.status);
+        this.authorize(data).then((res) => {
+          localStorage.setItem("jwt", res.data.token);
+          this._token = res.data.token;
+          return Promise.resolve(res.status);
+        });
       });
   }
 
@@ -53,8 +55,8 @@ class MainApi {
       .then(this._handleOriginalResponse)
       .then((res) => {
         this._token = token;
-        return Promise.resolve(res)
-      })
+        return Promise.resolve(res);
+      });
   }
 
   isLogedIn() {
