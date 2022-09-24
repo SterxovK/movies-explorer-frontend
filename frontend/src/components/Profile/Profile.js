@@ -69,7 +69,6 @@ function Profile({
   ];
 
   const TITLE_TEXT = `Привет, ${currentUserData.name || ""}!`;
-  // console.log(currentUserData.data.name);
 
   const PROFILE_STYLE_SETTINGS = {
     main: "profile",

@@ -11,13 +11,14 @@ import getFullImageUrl from '../../utils/getFullImageUrl';
 import getTrailerUrl from '../../utils/getTrailerUrl';
 
 function MoviesCard({
-  data,
-  locationPathname,
-  onSaveMovie,
-  onDeleteSavedMovie,
-}) {
+                      data,
+                      isFavorite,
+                      locationPathname,
+                      onSaveMovie,
+                      onDeleteSavedMovie,
+                    }) {
 
-  const [movieData, setMovieData] = React.useState({
+  const [movieData] = React.useState({
     country: data.country || 'Нет данных',
     director: data.director || 'Нет данных',
     duration: data.duration || 0,
@@ -27,19 +28,19 @@ function MoviesCard({
     trailer: getTrailerUrl(data),
     nameRU: data.nameRU || 'Нет данных',
     nameEN: data.nameEN || 'Нет данных',
-    movieId: data.id,
+    movieId: data.movieId || data.id,
     thumbnail: getFullImageUrl(data),
   })
 
   const handleClickFavoriteButton = () => {
     if (locationPathname === '/movies') {
-      if (!data.saved) {
-        onSaveMovie(movieData);
+      if (isFavorite) {
+        onDeleteSavedMovie(movieData.movieId);
       } else {
-        onDeleteSavedMovie(data._id);
+        onSaveMovie(movieData);
       }
     } else if (locationPathname === '/saved-movies') {
-      onDeleteSavedMovie(data._id);
+      onDeleteSavedMovie(movieData.movieId);
     }
   };
 
@@ -88,13 +89,12 @@ function MoviesCard({
           className={MOVIES_CARD_STYLE_SETTINGS.favoriteButton}
           onClick={handleClickFavoriteButton}
           locationPathname={locationPathname}
-          isSaved={data.saved}
-        />{console.log(data)}
+          isSaved={isFavorite}
+        />
       </MainArticle.Header>
     </MainArticle>
   );
 }
-
 
 
 export default MoviesCard;

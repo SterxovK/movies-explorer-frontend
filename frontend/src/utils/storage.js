@@ -12,6 +12,56 @@ class Storage {
     this._mainApi = mainApi;
   }
 
+  // search
+  saveSearchState(term, short = false) {
+    localStorage.setItem("searchTerm", JSON.stringify({"term": term, "short": short}))
+  }
+
+  getSearchState() {
+    const res = {
+      "term": "",
+      "short": false
+    }
+    const item = localStorage.getItem("searchTerm")
+    if (item) {
+      const json = JSON.parse(item)
+      res.term = json.term || ""
+      res.short = json.short || false
+    }
+
+    return res
+  }
+
+
+  movieFilter(movie, term, short) {
+    if (short) {
+      if (movie.duration <= 40 && (movie.nameRU.toLowerCase().includes(term.toLowerCase()) || movie.nameEN.toLowerCase().includes(term.toLowerCase()))) {
+        return true
+      }
+    } else {
+      if (movie.nameRU.toLowerCase().includes(term.toLowerCase()) || movie.nameEN.toLowerCase().includes(term.toLowerCase())) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  shortMovieFilter(movie) {
+    return movie.duration <= 40
+  }
+
+  async getFilteredMovies(term, short) {
+    if (term === '') {
+      return [];
+    }
+
+    const allMovies = await this.getMovies();
+    return allMovies.filter((movie) => this.movieFilter(movie, term, short))
+  }
+
+  // end search
+
   _getMoviesFromCache() {
     return JSON.parse(localStorage.getItem("movies")) || [];
   }
@@ -25,14 +75,12 @@ class Storage {
     if (cachedMovies.length > 0) {
       return cachedMovies;
     }
+
     const movies = await this._moviesApi.getMoviesData();
-    // const aaa = movies.data.map((item) => {
-    //   item.saved = true;
-    //   return item;
-    // })
-     this._setMoviesCache(movies.data);
-     return movies.data;
+    this._setMoviesCache(movies.data);
+    return movies.data;
   }
+
   _getSavedMoviesFromCache() {
     return JSON.parse(localStorage.getItem("saved-movies")) || [];
   }
@@ -41,65 +89,39 @@ class Storage {
     localStorage.setItem("saved-movies", JSON.stringify(movies));
   }
 
-  async getSavedMovies() {
+  // saved movies
+  async getFilteredFavoriteMovies(term, short) {
+    const allFavorite = await this.getFavoriteMovies(short);
+    return allFavorite.filter((movie) => this.movieFilter(movie, term, short))
+  }
+
+  async getFavoriteMovies(short = false) {
     if (!this._mainApi.isLogedIn()) {
       return [];
     }
 
-    return await this._getSavedMoviesIds();
+    const res = await this._mainApi.getSavedMovies();
+    let savedMovies = res.data;
+    if (short) {
+      savedMovies = savedMovies.filter(this.shortMovieFilter)
+    }
+
+    return savedMovies
   }
 
-  async _getSavedMoviesIds() {
-    if (!this._mainApi.isLogedIn()) {
-      return [];
-    }
-    const cachedSavedMovies = this._getSavedMoviesFromCache();
-    if (cachedSavedMovies.length > 0) {
-      return cachedSavedMovies;
-    }
-    const savedMovies = await this._mainApi.getSavedMovies();
-    const savedArr = savedMovies.map((item) => {
-      item.saved = true;
-      return item;
-    });
-    this._setSavedMoviesCache(savedArr);
-
-    return savedArr;
-  }
-
-  deleteSavedMovie(id) {
+  deleteFavoriteMovie(id) {
     if (!this._mainApi.isLogedIn()) {
       return;
     }
-    this._mainApi.deleteSavedMovie(id).then(() => {
-      const savedMovies = this._getSavedMoviesFromCache();
-      savedMovies.filter((movieId) => {
-        return movieId !== id;
-      });
-      this._setSavedMoviesCache(savedMovies);
-    });
+    return this._mainApi.deleteSavedMovie(id)
   }
 
-  saveMovie(movie) {
-    console.log(676767, movie);
+  saveFavoriteMovie(movie) {
     if (!this._mainApi.isLogedIn()) {
-      console.log(movie);
-      return;
+      return new Error("not authorized")
     }
 
-    return this._mainApi
-      .saveMovie(movie)
-      .then(() => {
-        const savedMovies = this._getSavedMoviesFromCache();
-        movie.saved = true;
-        savedMovies.push(movie);
-        this._setSavedMoviesCache(savedMovies);
-        console.log(565656);
-        return Promise.resolve();
-      })
-      .catch((err) => {
-        return Promise.reject(err);
-      });
+    return this._mainApi.saveMovie(movie)
   }
 }
 

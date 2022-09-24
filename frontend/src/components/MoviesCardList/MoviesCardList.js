@@ -6,12 +6,12 @@ import ShowMoreButton from '../ShowMoreButton/ShowMoreButton';
 import useCurrentSize from '../../hooks/useCurrentSize';
 
 function MoviesCardList({
-  locationPathname,
-  data,
-  onSaveMovie,
-  onDeleteSavedMovie,
-}) {
-console.log(3456, data)
+                          locationPathname,
+                          data,
+                          favoriteMovieIDs,
+                          onSaveMovie,
+                          onDeleteSavedMovie,
+                        }) {
   const SIZE_WIDTH_LARGE = 1024;
   const SIZE_WIDTH_MEDIUM = 768;
   const SIZE_WIDTH_SMALL = 320;
@@ -42,7 +42,8 @@ console.log(3456, data)
     } else if (size.width < SIZE_WIDTH_MEDIUM && size.width >= SIZE_WIDTH_SMALL) {
       setNumberMoviesToRender(NUMBER_MOVIES_TO_RENDER_SMALL);
       setNumberMoviesToAdd(NUMBER_MOVIES_TO_ADD_MEDIUM);
-    };
+    }
+    ;
   };
 
   const handleShowMoreMoviesButtonClick = () => {
@@ -63,7 +64,8 @@ console.log(3456, data)
         setIsShowButtonActive(false);
       } else {
         setIsShowButtonActive(true);
-      };
+      }
+      ;
     } else if (locationPathname === '/saved-movies') {
       setMoviesToRender(data);
       setIsShowButtonActive(false);
@@ -76,6 +78,7 @@ console.log(3456, data)
     >
       <MoviesCard
         data={item}
+        isFavorite={favoriteMovieIDs.get(item.id) || false}
         locationPathname={locationPathname}
         onSaveMovie={onSaveMovie}
         onDeleteSavedMovie={onDeleteSavedMovie}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useLocation } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 
 import SearchForm from '../SearchForm/SearchForm';
 
@@ -13,56 +13,72 @@ import MOVIES_ERRORS_TEXTS from '../../constants/movies-errors-texts';
 import NO_MOVIES_FOUND_TEXT from '../../constants/no-movies-found-text';
 
 function SavedMovies({
-  onDeleteSavedMovie,
-  savedMovies,
-  isSavedMoviesEmpty,
-  isLoadingData,
-  handleSearchSavedMoviesData,
-  getSavedMoviesResStatus,
-  isNoSavedMoviesFound,
-}) {
+                       storage,
+                     }) {
   const [isMoviesApiError, setIsMoviesApiError] = React.useState(false);
+  const [favoriteMovies, setFavoriteMovies] = React.useState([]);
+  const [favoriteMovieIDs, setFavoriteMovieIDs] = React.useState(new Map());
+  const [searchTerm] = React.useState({});
 
   const handleSubmit = (data) => {
-    handleSearchSavedMoviesData(data);
+    loadFavoriteMovies(data);
   }
 
   let location = useLocation();
 
-  const handleErrors = () => {
-    if (getSavedMoviesResStatus) {
-      switch (getSavedMoviesResStatus) {
-        case 200:
-          setIsMoviesApiError(false);
-          break;
-        default:
-          setIsMoviesApiError(true);
-          break;
-      };
-    };
-  };
+  const onDeleteSavedMovie = (id) => {
+    storage
+      .deleteFavoriteMovie(id)
+      .then(() => {
+        setFavoriteMovies(favoriteMovies.filter(movie => {
+          return movie.movieId !== id;
+        }))
+      })
+  }
+
+  const loadFavoriteMovies = (searchTerm) => {
+    if (searchTerm.term) {
+      storage.getFilteredFavoriteMovies(searchTerm.term, searchTerm.short)
+        .then((fMovies) => {
+          const m = new Map();
+          fMovies.forEach((movie) => {
+            m.set(movie.movieId, true);
+          })
+          setFavoriteMovies(fMovies);
+          setFavoriteMovieIDs(m);
+        }).catch((err) => {
+        setIsMoviesApiError(true)
+      })
+    } else {
+      storage.getFavoriteMovies(searchTerm.short || false)
+        .then((fMovies) => {
+          const m = new Map();
+          fMovies.forEach((movie) => {
+            m.set(movie.movieId, true);
+          })
+
+          setFavoriteMovies(fMovies);
+          setFavoriteMovieIDs(m);
+        }).catch((err) => {
+        setIsMoviesApiError(true)
+      })
+    }
+  }
 
   React.useEffect(() => {
-    handleErrors();
-  }, [getSavedMoviesResStatus])
-
-  React.useEffect(() => {
-    handleSearchSavedMoviesData();
+    loadFavoriteMovies(searchTerm)
   }, [])
 
   return (
     <main>
       <SearchForm
         onSubmit={handleSubmit}
+        searchTerm={searchTerm}
+        isFavorite={true}
       />
-      {!isLoadingData && isSavedMoviesEmpty && (
-        <Notification
+      {(favoriteMovies.length === 0 &&
+        < Notification
           text={NO_MOVIES_FOUND_TEXT.SAVED_IS_EMPTY}
-        />
-      )}
-      {!isLoadingData && isNoSavedMoviesFound && (
-        <Notification
-          text={NO_MOVIES_FOUND_TEXT.BASE_TEXT}
         />
       )}
       {isMoviesApiError && (
@@ -71,7 +87,8 @@ function SavedMovies({
         />
       )}
       <MoviesCardList
-        data={savedMovies}
+        data={favoriteMovies}
+        favoriteMovieIDs={favoriteMovieIDs}
         locationPathname={location.pathname}
         onDeleteSavedMovie={onDeleteSavedMovie}
       />

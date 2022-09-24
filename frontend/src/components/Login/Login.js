@@ -5,13 +5,18 @@ import AuthForm from '../AuthForm/AuthForm';
 import useFormWithValidation from '../../hooks/useFormValidation';
 
 import LOGIN_ERRORS_TEXTS from '../../constants/login-errors-texts';
+import {Redirect} from "react-router-dom";
 
 function Login({
   onSignin,
+  isLoggedIn,
   authResStatus,
   tokenResStatus,
   isLoadingSignin,
  }) {
+  const state = {
+    redirect: isLoggedIn,
+  }
 
   const [isAuthError, setIsAuthError] = React.useState(false);
   const [authErrorText, setAuthErrorText] = React.useState(null);
@@ -128,6 +133,12 @@ function Login({
     };
   };
 
+  const renderRedirect = () => {
+    if (state.redirect) {
+      return <Redirect to='/' />
+    }
+  }
+
   React.useEffect(() => {
     errorHandler();
   }, [authResStatus, tokenResStatus]);
@@ -136,6 +147,7 @@ function Login({
     <main
       className={LOGIN_STYLE_SETTINGS.main}
     >
+      {renderRedirect()}
       <AuthForm
         titleText={TITLE_TEXT}
         inputsData={INPUTS_DATA}

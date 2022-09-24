@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import InputField from "../InputField/InputField";
 
@@ -8,26 +8,45 @@ import SubmitButton from "../SubmitButton/SubmitButton";
 
 import { ReactComponent as SearchFormIcon } from "../../images/SearchForm/search-form-icon.svg";
 
-import useFormWithValidation from "../../hooks/useFormValidation";
+function SearchForm({ onSubmit, searchTerm, isFavorite = false}) {
+  const [term, setTerm] = useState('');
+  const [short, setShort] = useState(false);
+  const [formValid, setFormValid] = useState(false);
 
-function SearchForm({ onSubmit }) {
-  const { values, handleChange, resetForm } = useFormWithValidation({});
+
+  const handleTermChange = (evt) => {
+    setTerm(evt.target.value)
+    if (evt.target.value.length > 0) {
+      setFormValid(true)
+    } else {
+      setFormValid(false)
+    }
+  }
+
 
   const handleCheckBoxChange = (evt) => {
-    handleChange(evt);
-    values.shortfilm = evt.target.checked;
-    sendInputData();
+    setShort(evt.target.checked);
+    if (term || isFavorite) {
+      sendInputData(term, evt.target.checked);
+    }
   };
 
-  const sendInputData = () => {
-    onSubmit(values);
+  const sendInputData = (iterm, ishort) => {
+    onSubmit({term: iterm, short: ishort});
   };
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    sendInputData();
-    resetForm();
+    sendInputData(term, short);
   };
+
+  React.useEffect(() => {
+    if (searchTerm && searchTerm.term) {
+      setTerm(searchTerm.term)
+      setShort(searchTerm.short)
+      setFormValid(true)
+    }
+  }, [searchTerm])
 
   const SEARCH_FORM_STYLE_SETTINGS = {
     form: "search-form",
@@ -65,13 +84,14 @@ function SearchForm({ onSubmit }) {
   };
 
   return (
+
     <form className={SEARCH_FORM_STYLE_SETTINGS.form} onSubmit={handleSubmit}>
       <SearchFormIcon className={SEARCH_FORM_STYLE_SETTINGS.icon} />
       <InputField
         settings={SEARCH_TEXT_INPUT_SETTINGS}
         className={SEARCH_FORM_STYLE_SETTINGS.textInput}
-        onChange={handleChange}
-        value={values.search}
+        onChange={handleTermChange}
+        value={term}
       />
       <FilterCheckbox
         inputClassName={SEARCH_FORM_STYLE_SETTINGS.checkboxInput}
@@ -80,11 +100,12 @@ function SearchForm({ onSubmit }) {
         onFocusClassName={SEARCH_FORM_STYLE_SETTINGS.checkboxOnFocus}
         settings={SHORTFILM_FILTER_CHECKBOX_INPUT_SETTINGS}
         onChange={handleCheckBoxChange}
-        value={values.shortfilm}
+        value={short}
       />
       <SubmitButton
         className={SEARCH_FORM_STYLE_SETTINGS.submitButton}
         settings={SUBMIT_BUTTON_SETTINGS}
+        disabled={!formValid}
       />
     </form>
   );

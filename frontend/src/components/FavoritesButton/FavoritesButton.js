@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React from 'react';
 
 import { ReactComponent as AddFavoritesButtonIcon } from '../../images/MoviesCard/add-favorites-button-icon.svg';
 import { ReactComponent as AddFavoritesButtonIconMarked } from '../../images/MoviesCard/add-favorites-button-icon-marked.svg';
@@ -26,7 +26,6 @@ function FavoritesButton({
 
   return (
     <button className={className} aria-label={buttonLabel} onClick={onClick}>
-      {console.log(locationPathname, isSaved)}
       {locationPathname === "/saved-movies" ? (
         <RemoveFavoritesButtonIcon />
       ) : locationPathname === "/movies" && isSaved ? (

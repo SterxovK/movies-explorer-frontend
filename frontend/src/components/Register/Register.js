@@ -5,12 +5,17 @@ import AuthForm from '../AuthForm/AuthForm';
 import useFormWithValidation from '../../hooks/useFormValidation';
 
 import REGISTRATION_ERRORS_TEXTS from '../../constants/registration-errors-texts';
+import { Redirect } from 'react-router-dom';
 
 function Register({
   onSignup,
+  isLoggedIn,
   regResStatus,
   isLoadingSignup,
 }) {
+  const state = {
+    redirect: isLoggedIn,
+  }
 
   const [isRegistrationError, setIsRegistrationError] = React.useState(false);
   const [registrationErrorText, setRegistrationErrorText] = React.useState('');
@@ -111,14 +116,22 @@ function Register({
     };
   };
 
+  const renderRedirect = () => {
+    if (state.redirect) {
+      return <Redirect to='/' />
+    }
+  }
+
   React.useEffect(() => {
     errorHandler();
   }, [regResStatus]);
+
 
   return (
     <main
       className={REGISTER_STYLE_SETTINGS.main}
     >
+      {renderRedirect()}
       <AuthForm
         titleText={TITLE_TEXT}
         inputsData={INPUTS_DATA}
