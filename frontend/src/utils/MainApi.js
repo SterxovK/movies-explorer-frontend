@@ -22,16 +22,7 @@ class MainApi {
     })
       .then(this._handleOriginalResponse)
       .then(() => {
-        this.authorize({ email: data.email, password: data.password })
-          .then(this._handleOriginalResponse)
-          .then((res) => {
-            localStorage.setItem("jwt", res.data.token);
-            this._token = res.data.token;
-            return Promise.resolve(res.status);
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
+        return this.authorize({ email: data.email, password: data.password });
       })
       .catch((err) => {
         return Promise.reject(err);
@@ -46,8 +37,10 @@ class MainApi {
     })
       .then(this._handleOriginalResponse)
       .then((res) => {
-        localStorage.setItem("jwt", res.data.token);
-        this._token = res.data.token;
+        if (res.data && res.data.token) {
+          localStorage.setItem("jwt", res.data.token);
+          this._token = res.data.token;
+        }
         return Promise.resolve(res.status);
       });
   }
