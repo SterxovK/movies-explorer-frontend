@@ -19,7 +19,13 @@ class MainApi {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify(data),
-    }).then(this._handleOriginalResponse);
+    })
+      .then(this._handleOriginalResponse)
+      .then((res) => {
+        localStorage.setItem("jwt", res.data.token);
+        this._token = res.data.token;
+        return Promise.resolve(res.status);
+      });
   }
 
   authorize(data) {

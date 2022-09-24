@@ -50,6 +50,8 @@ function App() {
       .register(data)
       .then((res) => {
         setRegistrationResStatus(res.status);
+        setLoggedIn(true);
+        history.push("/movies");
       })
       .catch((err) => {
         setRegistrationResStatus(err);
