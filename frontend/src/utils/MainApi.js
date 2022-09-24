@@ -22,11 +22,13 @@ class MainApi {
     })
       .then(this._handleOriginalResponse)
       .then((res) => {
-        this.authorize(data).then((res) => {
-          localStorage.setItem("jwt", res.data.token);
-          this._token = res.data.token;
-          return Promise.resolve(res.status);
-        });
+        this.authorize({ email: data.email, password: data.password }).then(
+          (res) => {
+            localStorage.setItem("jwt", res.data.token);
+            this._token = res.data.token;
+            return Promise.resolve(res.status);
+          }
+        );
       });
   }
 
