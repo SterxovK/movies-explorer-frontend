@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Switch, useRouteMatch, useHistory} from "react-router-dom";
+import { Route, Switch, useRouteMatch, useHistory } from "react-router-dom";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 import mainApi from "../../utils/MainApi";
 import AUTH_SUCCESS_TEXTS from "../../constants/auth-success-texts";
@@ -101,10 +101,13 @@ function App() {
         })
         .catch((err) => {
           setTokenAuthResStatus(err);
-
+// добавил исключение на случай несоотвествия токена.
+          localStorage.clear();
+          history.push("/");
         });
     } else {
       setIsLoginDataLoading(true);
+
     }
   };
 
@@ -156,7 +159,7 @@ function App() {
   const handleErrorWithNotification = (err) => {
     setOpenNotificationModal();
     setNotificationText(err);
-  }
+  };
 
   const exclusionRoutesPathsAuthArray = ["/signin", "/signup"];
 
@@ -166,12 +169,12 @@ function App() {
     <CurrentUserContext.Provider value={currentUserData}>
       <div className="app">
         {useRouteMatch(exclusionRoutesPathsAuthArray) ? null : (
-          <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu}/>
+          <Header loggedIn={loggedIn} onOpenMenu={setOpenMenu} />
         )}
 
         <Switch>
           <Route exact path="/">
-            <Main/>
+            <Main />
           </Route>
           <Route path="/signup">
             <Register
@@ -179,9 +182,7 @@ function App() {
               onSignup={handleSignup}
               regResStatus={registrationResStatus}
               authResStatus={authResStatus}
-              isLoadingSignup={
-                isLoadingSignup || isLoadingSignin
-              }
+              isLoadingSignup={isLoadingSignup || isLoadingSignin}
             />
           </Route>
           <Route path="/signin">
@@ -190,9 +191,7 @@ function App() {
               onSignin={handleSignin}
               authResStatus={authResStatus}
               tokenResStatus={tokenAuthResStatus}
-              isLoadingSignin={
-                isLoadingSignup || isLoadingSignin
-              }
+              isLoadingSignin={isLoadingSignup || isLoadingSignin}
             />
           </Route>
           {isLoginDataLoading && (
@@ -227,12 +226,12 @@ function App() {
             />
           )}
           <Route path="*">
-            {!isLoginDataLoading && <Preloader/>}
-            {isLoginDataLoading && <NotFound/>}
+            {!isLoginDataLoading && <Preloader />}
+            {isLoginDataLoading && <NotFound />}
           </Route>
         </Switch>
-        {useRouteMatch(exclusionRoutesPathsArrayFooter) ? null : <Footer/>}
-        {menuIsOpen && <Menu isOpen={menuIsOpen} onClose={setCloseMenu}/>}
+        {useRouteMatch(exclusionRoutesPathsArrayFooter) ? null : <Footer />}
+        {menuIsOpen && <Menu isOpen={menuIsOpen} onClose={setCloseMenu} />}
         {notificationModalIsOpen && (
           <NotificationModal
             isOpen={notificationModalIsOpen}
