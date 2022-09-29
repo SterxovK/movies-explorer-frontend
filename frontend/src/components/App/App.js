@@ -23,7 +23,6 @@ import Storage from "../../utils/storage";
 function App() {
   const [isLoginDataLoading, setIsLoginDataLoading] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
-
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
   const [notificationModalIsOpen, setNotificationModalIsOpen] =
     React.useState(false);
