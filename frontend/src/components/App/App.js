@@ -100,7 +100,6 @@ function App() {
         })
         .catch((err) => {
           setTokenAuthResStatus(err);
-// добавил исключение на случай несоотвествия токена.
           localStorage.clear();
           history.push("/");
         });
